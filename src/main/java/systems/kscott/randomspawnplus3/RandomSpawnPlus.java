@@ -12,6 +12,7 @@ import systems.kscott.randomspawnplus3.listeners.RSPFirstJoinListener;
 import systems.kscott.randomspawnplus3.listeners.RSPLoginListener;
 import systems.kscott.randomspawnplus3.spawn.SpawnCacher;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
+import systems.kscott.randomspawnplus3.util.Metrics;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,8 @@ public final class RandomSpawnPlus extends JavaPlugin {
         SpawnCacher.initialize(this);
         SpawnCacher.getInstance().cacheSpawns();
         INSTANCE = this;
+
+        new Metrics(this, 6465);
     }
 
     @Override
