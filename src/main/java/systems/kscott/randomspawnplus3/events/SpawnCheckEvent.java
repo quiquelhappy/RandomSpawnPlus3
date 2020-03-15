@@ -3,6 +3,7 @@ package systems.kscott.randomspawnplus3.events;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class SpawnCheckEvent extends Event {
 
@@ -17,6 +18,7 @@ public class SpawnCheckEvent extends Event {
         this.valid = true;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return HANDLERS_LIST;

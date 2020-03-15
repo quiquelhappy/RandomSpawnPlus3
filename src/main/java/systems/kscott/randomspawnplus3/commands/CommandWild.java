@@ -24,12 +24,10 @@ public class CommandWild extends BaseCommand {
 
     private RandomSpawnPlus plugin;
     private FileConfiguration config;
-    private FileConfiguration lang;
 
     public CommandWild(RandomSpawnPlus plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        this.lang = plugin.getLang();
     }
 
     @Default
@@ -93,11 +91,11 @@ public class CommandWild extends BaseCommand {
 
         Location location = SpawnFinder.getInstance().findSpawn(true);
 
-        HashMap<String, String> placeholders = new HashMap<String, String>();
-        placeholders.put("%x", Integer.toString(location.getBlockX()));
-        placeholders.put("%y", Integer.toString(location.getBlockY()));
-        placeholders.put("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(player, Chat.get("wild-tp"), placeholders);
+        String message = Chat.get("wild-tp");
+        message = message.replace("%x", Integer.toString(location.getBlockX()));
+        message = message.replace("%y", Integer.toString(location.getBlockY()));
+        message = message.replace("%z", Integer.toString(location.getBlockZ()));
+        Chat.sendToSender(player, message);
 
         player.teleport(location.toCenterLocation().subtract(0, 0.5, 0));
         CooldownManager.addCooldown(player);
@@ -115,15 +113,15 @@ public class CommandWild extends BaseCommand {
             return;
         }
 
-        HashMap<String, String> placeholders = new HashMap<String, String>();
-        placeholders.put("%x", Integer.toString(location.getBlockX()));
-        placeholders.put("%y", Integer.toString(location.getBlockY()));
-        placeholders.put("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(otherPlayer, Chat.get("wild-tp"), placeholders);
+        String message = Chat.get("wild-tp");
+        message = message.replace("%x", Integer.toString(location.getBlockX()));
+        message = message.replace("%y", Integer.toString(location.getBlockY()));
+        message = message.replace("%z", Integer.toString(location.getBlockZ()));
+        Chat.sendToSender(otherPlayer, message);
 
-        placeholders = new HashMap<String, String>();
-        placeholders.put("%player", otherPlayer.getName());
-        Chat.sendToSender(player, Chat.get("wild-tp-other"), placeholders);
+        message = Chat.get("wild-tp-other");
+        message = message.replace("%player", otherPlayer.getName());
+        Chat.sendToSender(player, message);
 
         otherPlayer.teleport(location);
     }
