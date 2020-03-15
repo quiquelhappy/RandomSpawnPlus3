@@ -1,7 +1,6 @@
 package systems.kscott.randomspawnplus3.listeners;
 
-import ninja.leaping.configurate.ConfigurationNode;
-import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,11 +12,11 @@ import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 public class RSPDeathListener implements Listener {
 
     private RandomSpawnPlus plugin;
-    private ConfigurationNode config;
+    private FileConfiguration config;
 
     public RSPDeathListener(RandomSpawnPlus plugin) {
         this.plugin = plugin;
-        this.config = plugin.getRootConfig();
+        this.config = plugin.getConfig();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -25,11 +24,11 @@ public class RSPDeathListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (config.getNode("randomspawn-enabled").getBoolean()) {
-            if (config.getNode("on-death").getBoolean()) {
+        if (config.getBoolean("randomspawn-enabled")) {
+            if (config.getBoolean("on-death")) {
                 if (player.isDead()) {
-                    if (!config.getNode("use-permission-node").getBoolean() || (config.getNode("use-permission-node").getBoolean() && player.hasPermission("randomspawnplus.randomspawn"))) {
-                        if (config.getNode("spawn-at-bed").getBoolean()) {
+                    if (!config.getBoolean("use-permission-node") || (config.getBoolean("use-permission-node") && player.hasPermission("randomspawnplus.randomspawn"))) {
+                        if (config.getBoolean("spawn-at-bed")) {
                             if (player.getBedSpawnLocation() != null) {
                                 event.setRespawnLocation(player.getBedSpawnLocation());
                                 return;

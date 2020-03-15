@@ -13,7 +13,7 @@ public class CooldownManager {
     public static HashMap<String, Long> cooldowns = new HashMap<>();
 
     public static void addCooldown(Player p) {
-        int cooldown = RandomSpawnPlus.getInstance().getRootConfig().getNode("wild-cooldown").getInt();
+        int cooldown = RandomSpawnPlus.getInstance().getConfig().getInt("wild-cooldown");
         long now = Instant.now().toEpochMilli();
         long future = now + TimeUnit.SECONDS.toMillis(cooldown);
         cooldowns.put(p.getUniqueId().toString(), future);

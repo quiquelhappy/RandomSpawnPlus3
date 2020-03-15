@@ -1,8 +1,8 @@
 package systems.kscott.randomspawnplus3.listeners;
 
 import com.earth2me.essentials.User;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,11 +15,11 @@ import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 public class RSPFirstJoinListener implements Listener {
 
     private RandomSpawnPlus plugin;
-    private ConfigurationNode config;
+    private FileConfiguration config;
 
     public RSPFirstJoinListener(RandomSpawnPlus plugin) {
         this.plugin = plugin;
-        this.config = plugin.getRootConfig();
+        this.config = plugin.getConfig();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -27,15 +27,15 @@ public class RSPFirstJoinListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (config.getNode("randomspawn-enabled").getBoolean()) {
-            if (config.getNode("on-first-join").getBoolean()) {
+        if (config.getBoolean("randomspawn-enabled")) {
+            if (config.getBoolean("on-first-join")) {
                 if (RSPLoginListener.firstJoinPlayers.contains(player.getName())) {
-                    if (config.getNode("use-permission-node").getBoolean() && !player.hasPermission("randomspawnplus.randomspawn")) {
+                    if (config.getBoolean("use-permission-node") && !player.hasPermission("randomspawnplus.randomspawn")) {
                         RSPLoginListener.firstJoinPlayers.remove(player.getName());
                         return;
                     } else {
                         Location spawnLoc = SpawnFinder.getInstance().findSpawn(true);
-                        if (config.getNode("essentials-home-on-first-spawn").getBoolean()) {
+                        if (config.getBoolean("essentials-home-on-first-spawn")) {
                             User user = plugin.getEssentials().getUser(player);
                             user.setHome("home", spawnLoc);
                             user.save();

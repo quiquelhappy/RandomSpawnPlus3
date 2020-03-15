@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.exceptions.NoCooldownException;
@@ -22,9 +23,13 @@ import java.util.HashMap;
 public class CommandWild extends BaseCommand {
 
     private RandomSpawnPlus plugin;
+    private FileConfiguration config;
+    private FileConfiguration lang;
 
     public CommandWild(RandomSpawnPlus plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfig();
+        this.lang = plugin.getLang();
     }
 
     @Default
@@ -43,7 +48,7 @@ public class CommandWild extends BaseCommand {
         }
 
         if ((cooldown - Instant.now().toEpochMilli()) >= 0) {
-            if (plugin.getRootConfig().getNode("debug-mode").getBoolean())
+            if (config.getBoolean("debug-mode"))
                 plugin.getLogger().info(Long.toString(cooldown));
 
             int seconds = (int) ((cooldown - Instant.now().toEpochMilli()) / 1000) % 60;
@@ -76,12 +81,12 @@ public class CommandWild extends BaseCommand {
 
             if (hours == 0) {
                 if (minutes == 0) {
-                    Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-seconds").getString(), placeholders);
+                    Chat.sendToSender(player, Chat.get("wild-tp-cooldown-seconds"), placeholders);
                 } else {
-                    Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-minutes").getString(), placeholders);
+                    Chat.sendToSender(player, Chat.get("wild-tp-cooldown-minutes"), placeholders);
                 }
             } else {
-                Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown").getString(), placeholders);
+                Chat.sendToSender(player, Chat.get("wild-tp-cooldown"), placeholders);
             }
             return;
         }
@@ -92,7 +97,7 @@ public class CommandWild extends BaseCommand {
         placeholders.put("%x", Integer.toString(location.getBlockX()));
         placeholders.put("%y", Integer.toString(location.getBlockY()));
         placeholders.put("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp").getString(), placeholders);
+        Chat.sendToSender(player, Chat.get("wild-tp"), placeholders);
 
         player.teleport(location.toCenterLocation().subtract(0, 0.5, 0));
         CooldownManager.addCooldown(player);
@@ -106,7 +111,7 @@ public class CommandWild extends BaseCommand {
         Player otherPlayer = Bukkit.getPlayer(other);
 
         if (otherPlayer == null) {
-            Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-doesnt-exist").getString());
+            Chat.sendToSender(player, Chat.get("wild-tp-doesnt-exist"));
             return;
         }
 
@@ -114,11 +119,11 @@ public class CommandWild extends BaseCommand {
         placeholders.put("%x", Integer.toString(location.getBlockX()));
         placeholders.put("%y", Integer.toString(location.getBlockY()));
         placeholders.put("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(otherPlayer, plugin.getRootLang().getNode("wild-tp").getString(), placeholders);
+        Chat.sendToSender(otherPlayer, Chat.get("wild-tp"), placeholders);
 
         placeholders = new HashMap<String, String>();
         placeholders.put("%player", otherPlayer.getName());
-        Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-other").getString(), placeholders);
+        Chat.sendToSender(player, Chat.get("wild-tp-other"), placeholders);
 
         otherPlayer.teleport(location);
     }

@@ -1,10 +1,11 @@
 package systems.kscott.randomspawnplus3;
 
 import co.aikar.commands.PaperCommandManager;
+import lombok.Getter;
 import net.ess3.api.IEssentials;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import systems.kscott.randomspawnplus3.commands.CommandRSP;
 import systems.kscott.randomspawnplus3.commands.CommandWild;
 import systems.kscott.randomspawnplus3.listeners.RSPDeathListener;
@@ -12,27 +13,29 @@ import systems.kscott.randomspawnplus3.listeners.RSPFirstJoinListener;
 import systems.kscott.randomspawnplus3.listeners.RSPLoginListener;
 import systems.kscott.randomspawnplus3.spawn.SpawnCacher;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
+import systems.kscott.randomspawnplus3.util.Chat;
+import systems.kscott.randomspawnplus3.util.ConfigFile;
 import systems.kscott.randomspawnplus3.util.Metrics;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 
 public final class RandomSpawnPlus extends JavaPlugin {
 
     public static RandomSpawnPlus INSTANCE;
 
-    ConfigurationNode config;
-    ConfigurationNode lang;
-    ConfigurationNode spawns;
-
-    YAMLConfigurationLoader spawnsLoader;
+    @Getter
+    private ConfigFile configManager;
+    @Getter
+    private ConfigFile langManager;
+    @Getter
+    private ConfigFile spawnsManager;
 
     @Override
     public void onEnable() {
-        loadConfig();
-        loadLang();
-        loadSpawns();
+
+        configManager = new ConfigFile(this, "config.yml");
+        langManager = new ConfigFile(this, "lang.yml");
+        spawnsManager = new ConfigFile(this, "spawns.yml");
+
+        Chat.setLang(langManager.getConfig());
 
         registerEvents();
         registerCommands();
@@ -51,61 +54,6 @@ public final class RandomSpawnPlus extends JavaPlugin {
     }
 
 
-    public void loadConfig() {
-        String configName = "config.yml";
-        File file = new File(getDataFolder().toString(), configName);
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            saveResource(configName, true);
-        }
-        YAMLConfigurationLoader loader = YAMLConfigurationLoader.builder().setPath(Paths.get(getDataFolder().toString(), configName).toAbsolutePath()).build();
-        ConfigurationNode rootNode;
-        try {
-            rootNode = loader.load();
-            config = rootNode;
-            //getLogger().info(config.toString());
-        } catch(IOException e) {
-            getServer().getLogger().severe("Failed to load config!");
-            getServer().getPluginManager().disablePlugin(this);
-        }
-    }
-
-    public void loadLang() {
-        String configName = "lang.yml";
-        File file = new File(getDataFolder().toString(), configName);
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            saveResource(configName, true);
-        }
-        YAMLConfigurationLoader loader = YAMLConfigurationLoader.builder().setPath(Paths.get(getDataFolder().toString(), configName).toAbsolutePath()).build();
-        ConfigurationNode rootNode;
-        try {
-            rootNode = loader.load();
-            lang = rootNode;
-        } catch(IOException e) {
-            getServer().getLogger().severe("Failed to load lang!");
-            getServer().getPluginManager().disablePlugin(this);
-        }
-    }
-
-    public void loadSpawns() {
-        String configName = "spawns.yml";
-        File file = new File(getDataFolder().toString(), configName);
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            saveResource(configName, true);
-        }
-        spawnsLoader = YAMLConfigurationLoader.builder().setPath(Paths.get(getDataFolder().toString(), configName).toAbsolutePath()).build();
-        ConfigurationNode rootNode;
-        try {
-            rootNode = spawnsLoader.load();
-            spawns = rootNode;
-        } catch(IOException e) {
-            getServer().getLogger().severe("Failed to load lang!");
-            getServer().getPluginManager().disablePlugin(this);
-        }
-    }
-
     public void registerEvents() {
         getServer().getPluginManager().registerEvents(new RSPDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new RSPLoginListener(this), this);
@@ -118,24 +66,6 @@ public final class RandomSpawnPlus extends JavaPlugin {
         manager.registerCommand(new CommandRSP(this));
     }
 
-    public ConfigurationNode getRootConfig() {
-        return config;
-    }
-
-    public ConfigurationNode getRootLang() {
-        return lang;
-    }
-
-    public ConfigurationNode getRootSpawns() {return spawns;}
-
-    public void saveSpawns() {
-        try {
-            spawnsLoader.save(spawns);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static RandomSpawnPlus getInstance() {
         return INSTANCE;
     }
@@ -143,4 +73,18 @@ public final class RandomSpawnPlus extends JavaPlugin {
     public IEssentials getEssentials() {
         return (IEssentials) getServer().getPluginManager().getPlugin("Essentials");
     }
+
+    @NotNull
+    public FileConfiguration getConfig() {
+        return configManager.getConfig();
+    }
+
+    public FileConfiguration getLang() {
+        return langManager.getConfig();
+    }
+
+    public FileConfiguration getSpawns() {
+        return spawnsManager.getConfig();
+    }
+
 }

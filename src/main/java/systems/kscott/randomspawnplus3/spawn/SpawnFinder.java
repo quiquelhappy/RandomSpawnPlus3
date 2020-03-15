@@ -1,13 +1,11 @@
 package systems.kscott.randomspawnplus3.spawn;
 
-import com.google.common.reflect.TypeToken;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.events.SpawnCheckEvent;
 import systems.kscott.randomspawnplus3.util.Blocks;
@@ -34,19 +32,15 @@ public class SpawnFinder {
 
     public RandomSpawnPlus plugin;
 
-    public ConfigurationNode config;
+    public FileConfiguration config;
 
     public SpawnFinder(RandomSpawnPlus plugin) {
         this.plugin = plugin;
-        this.config = plugin.getRootConfig();
+        this.config = plugin.getConfig();
 
         /* Setup safeblocks */
         List<String> safeBlockStrings = new ArrayList<>();
-        try {
-            safeBlockStrings = config.getNode("safe-blocks").getList(TypeToken.of(String.class));
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
+        safeBlockStrings = config.getStringList("safe-blocks");
 
         safeBlocks = new ArrayList<>();
         for (String string : safeBlockStrings) {
@@ -59,7 +53,7 @@ public class SpawnFinder {
     }
 
     public Location getCandidateLocation() {
-        String worldString = config.getNode("respawn-world").getString();
+        String worldString = config.getString("respawn-world");
 
         World world = Bukkit.getWorld(worldString);
 
@@ -68,11 +62,10 @@ public class SpawnFinder {
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
 
-        ConfigurationNode rangeNode = config.getNode("spawn-range");
-        int maxX = rangeNode.getNode("max-x").getInt();
-        int minX = rangeNode.getNode("min-x").getInt();
-        int maxZ = rangeNode.getNode("max-z").getInt();
-        int minZ = rangeNode.getNode("min-z").getInt();
+        int minX = config.getInt("spawn-range.min-x");
+        int minZ = config.getInt("spawn-range.min-z");
+        int maxX = config.getInt("spawn-range.max-x");
+        int maxZ = config.getInt("spawn-range.max-z");
 
         int candidateX = Numbers.getRandomNumberInRange(minX, maxX);
         int candidateZ = Numbers.getRandomNumberInRange(minZ, maxZ);
@@ -82,7 +75,10 @@ public class SpawnFinder {
     }
 
     private Location getValidLocation(boolean useSpawnCaching) {
-        boolean useCache = plugin.getRootConfig().getNode("enable-spawn-cacher").getBoolean();
+
+        FileConfiguration spawns = plugin.getSpawns();
+
+        boolean useCache = config.getBoolean("enable-spawn-cacher");
 
         boolean valid = false;
 
@@ -93,11 +89,7 @@ public class SpawnFinder {
 
                 List<String> locations = null;
 
-                try {
-                    locations = plugin.getRootSpawns().getNode("spawns").getList(TypeToken.of(String.class));
-                } catch (ObjectMappingException e) {
-                    e.printStackTrace();
-                }
+                locations = spawns.getStringList("spawns");
 
                 int i = new Random().nextInt(locations.size());
                 location = Locations.deserializeLocationString(locations.get(i));
@@ -114,7 +106,7 @@ public class SpawnFinder {
 
         Location location = getValidLocation(useSpawnCaching);
 
-        boolean debugMode = config.getNode("debug-mode").getBoolean();
+        boolean debugMode = config.getBoolean("debug-mode");
         if (debugMode) {
             Location locClone = location.clone();
             plugin.getLogger().info(locClone.getBlock().getType().toString());
@@ -126,9 +118,9 @@ public class SpawnFinder {
     }
 
     public boolean checkSpawn(Location location) {
-        boolean blockWaterSpawns = config.getNode("block-water-spawns").getBoolean();
-        boolean blockLavaSpawns = config.getNode("block-lava-spawns").getBoolean();
-        boolean debugMode = config.getNode("debug-mode").getBoolean();
+        boolean blockWaterSpawns = config.getBoolean("block-water-spawns");
+        boolean blockLavaSpawns = config.getBoolean("block-lava-spawns");
+        boolean debugMode = config.getBoolean("debug-mode");
 
         boolean isValid;
 
@@ -195,7 +187,7 @@ public class SpawnFinder {
         int i = 255;
         while (i > 0) {
             if (!new Location(world, x, i, z).getBlock().getType().isAir()) {
-                if (config.getNode("debug-mode").getBoolean())
+                if (config.getBoolean("debug-mode"))
                     plugin.getLogger().info(Integer.toString(i));
                 return i;
             }

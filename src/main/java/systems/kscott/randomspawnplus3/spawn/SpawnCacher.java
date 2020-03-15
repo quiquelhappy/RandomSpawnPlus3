@@ -1,12 +1,11 @@
 package systems.kscott.randomspawnplus3.spawn;
 
-import com.google.common.reflect.TypeToken;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.util.Locations;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,22 +29,23 @@ public class SpawnCacher {
 
     public void cacheSpawns() {
 
-        List<String> locationStrings = null;
-        try {
-            locationStrings = plugin.getRootSpawns().getNode("spawns").getList(TypeToken.of(String.class));
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
+        FileConfiguration spawns = plugin.getSpawns();
+        FileConfiguration config = plugin.getConfig();
 
-        if (locationStrings.size() >= plugin.getRootConfig().getNode("spawn-cache-target").getInt()) {
+
+        List<String> locationStrings = null;
+        locationStrings = spawns.getStringList("spawns");
+
+
+        if (locationStrings.size() >= config.getInt("spawn-cache-target")) {
             return;
         }
 
         ArrayList<String> locations = new ArrayList<>();
 
-        int spawns = plugin.getRootConfig().getNode("spawn-cache-target").getInt();
+        int spawnCount = config.getInt("spawn-cache-target");
 
-        for (int i = 0; i <= spawns; i++) {
+        for (int i = 0; i <= spawnCount; i++) {
             Location location = null;
             boolean valid = false;
 
@@ -55,8 +55,13 @@ public class SpawnCacher {
             }
             locations.add(Locations.serializeString(location));
         }
-        plugin.getRootSpawns().getNode("spawns").setValue(locations);
-        plugin.saveSpawns();
+
+        spawns.set("spawns", locations);
+        try {
+            spawns.save("spawns.yml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -29,8 +29,10 @@ public class CommandRSP extends BaseCommand {
 
     @Subcommand("reload")
     public void _reload(Player player) {
-        plugin.loadConfig();
-        plugin.loadLang();
-        Chat.send(player, "&8[&3RandomSpawnPlus&8] &7Reloaded &ball configs&7,&b all langs&7,&b and all spawns&7.");
+        plugin.getConfigManager().reload();
+        plugin.getLangManager().reload();
+        plugin.getSpawnsManager().reload();
+        Chat.setLang(plugin.getLangManager().getConfig());
+        Chat.send(player, "&8[&3RandomSpawnPlus&8] &7Reloaded &bconfig.yml&7, &blang.yml&7, and &bspawns.yml&7.");
     }
 }

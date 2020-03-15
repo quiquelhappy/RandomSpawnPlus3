@@ -1,7 +1,7 @@
 package systems.kscott.randomspawnplus3.listeners;
 
-import ninja.leaping.configurate.ConfigurationNode;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public class RSPLoginListener implements Listener {
 
-    private ConfigurationNode config;
+    private FileConfiguration config;
 
     public RSPLoginListener(RandomSpawnPlus plugin) {
-        this.config = plugin.getRootConfig();
+        this.config = plugin.getConfig();
     }
 
 
@@ -22,8 +22,8 @@ public class RSPLoginListener implements Listener {
 
     @EventHandler
     public void preLoginHandler(AsyncPlayerPreLoginEvent event) {
-        if (config.getNode("randomspawn-enabled").getBoolean()) {
-            if (config.getNode("on-first-join").getBoolean()) {
+        if (config.getBoolean("randomspawn-enabled")) {
+            if (config.getBoolean("on-first-join")) {
                 String playerName = event.getName();
 
                 boolean hasPlayed = Bukkit.getServer().getOfflinePlayer(playerName).hasPlayedBefore();
