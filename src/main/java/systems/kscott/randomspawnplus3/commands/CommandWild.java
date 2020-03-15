@@ -30,57 +30,58 @@ public class CommandWild extends BaseCommand {
     @Default
     @CommandPermission("randomspawnplus.wild")
     public void wildSelf(Player player) {
-        if (!player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
-            long cooldown = 0;
+        long cooldown = 0;
 
-            try {
-                cooldown = CooldownManager.getCooldown(player);
-            } catch (NoCooldownException ignored) {
+        try {
+            cooldown = CooldownManager.getCooldown(player);
+        } catch (NoCooldownException ignored) {
 
+        }
+
+        if (player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
+            cooldown = 0;
+        }
+
+        if ((cooldown - Instant.now().toEpochMilli()) >= 0) {
+            if (plugin.getRootConfig().getNode("debug-mode").getBoolean())
+                plugin.getLogger().info(Long.toString(cooldown));
+
+            int seconds = (int) ((cooldown - Instant.now().toEpochMilli()) / 1000) % 60;
+            int minutes = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60)) % 60);
+            int hours = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60 * 60)) % 24);
+
+            HashMap<String, String> placeholders = new HashMap<>();
+
+            placeholders.put("%h", Integer.toString(hours));
+            placeholders.put("%m", Integer.toString(minutes));
+            placeholders.put("%s", Integer.toString(seconds));
+
+            if (hours != 1) {
+                placeholders.put("%a", "s");
+            } else {
+                placeholders.put("%a", "");
             }
 
-            if ((cooldown - Instant.now().toEpochMilli()) >= 0) {
-                if (plugin.getRootConfig().getNode("debug-mode").getBoolean())
-                    plugin.getLogger().info(Long.toString(cooldown));
+            if (minutes != 1) {
+                placeholders.put("%b", "s");
+            } else {
+                placeholders.put("%b", "");
+            }
 
-                int seconds = (int) ((cooldown - Instant.now().toEpochMilli()) / 1000) % 60;
-                int minutes = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60)) % 60);
-                int hours = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60 * 60)) % 24);
+            if (seconds != 1) {
+                placeholders.put("%c", "s");
+            } else {
+                placeholders.put("%c", "");
+            }
 
-                HashMap<String, String> placeholders = new HashMap<>();
-
-                placeholders.put("%h", Integer.toString(hours));
-                placeholders.put("%m", Integer.toString(minutes));
-                placeholders.put("%s", Integer.toString(seconds));
-
-                if (hours != 1) {
-                    placeholders.put("%a", "s");
+            if (hours == 0) {
+                if (minutes == 0) {
+                    Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-seconds").getString(), placeholders);
                 } else {
-                    placeholders.put("%a", "");
+                    Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-minutes").getString(), placeholders);
                 }
-
-                if (minutes != 1) {
-                    placeholders.put("%b", "s");
-                } else {
-                    placeholders.put("%b", "");
-                }
-
-                if (seconds != 1) {
-                    placeholders.put("%c", "s");
-                } else {
-                    placeholders.put("%c", "");
-                }
-
-                if (hours == 0) {
-                    if (minutes == 0) {
-                        Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-seconds").getString(), placeholders);
-                    } else {
-                        Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown-minutes").getString(), placeholders);
-                    }
-                } else {
-                    Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown").getString(), placeholders);
-                }
-
+            } else {
+                Chat.sendToSender(player, plugin.getRootLang().getNode("wild-tp-cooldown").getString(), placeholders);
             }
             return;
         }

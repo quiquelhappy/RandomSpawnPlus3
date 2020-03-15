@@ -11,13 +11,23 @@ commands:
   wild:
     description: Get a wild spawn
     usage: /wild [player]
+  rsp:
+    description: Main plugin command
+    usage: /rsp
 
 permissions:
   randomspawnplus.randomspawn:
     description: Enable random spawns
+    default: op
   randomspawnplus.wild:
     description: Teleport to a random location
+    default: op
   randomspawnplus.wild.others:
     description: Teleport others to a random location
+    default: op
   randomspawnplus.wild.bypasscooldown:
     description: Bypass the teleport cooldown
+    default: op
+  randomspawnplus.manage:
+    description: Access to the /rsp (and /rsp reload) command
+    default: op
