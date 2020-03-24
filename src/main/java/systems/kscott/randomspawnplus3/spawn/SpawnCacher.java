@@ -32,6 +32,8 @@ public class SpawnCacher {
         FileConfiguration spawns = plugin.getSpawns();
         FileConfiguration config = plugin.getConfig();
 
+        SpawnFinder finder = SpawnFinder.getInstance();
+
 
         List<String> locationStrings = null;
         locationStrings = spawns.getStringList("spawns");
@@ -51,8 +53,8 @@ public class SpawnCacher {
             boolean valid = false;
 
             while (!valid) {
-                location = SpawnFinder.getInstance().getCandidateLocation();
-                valid = SpawnFinder.getInstance().checkSpawn(location);
+                location = finder.getCandidateLocation();
+                valid = finder.checkSpawn(location);
             }
             locations.add(Locations.serializeString(location));
         }
