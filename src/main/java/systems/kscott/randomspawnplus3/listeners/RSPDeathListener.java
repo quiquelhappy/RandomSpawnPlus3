@@ -1,5 +1,7 @@
 package systems.kscott.randomspawnplus3.listeners;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +9,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
+import systems.kscott.randomspawnplus3.events.RandomSpawnEvent;
+import systems.kscott.randomspawnplus3.events.SpawnType;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 
 public class RSPDeathListener implements Listener {
@@ -34,7 +38,13 @@ public class RSPDeathListener implements Listener {
                                 return;
                             }
                         }
-                        event.setRespawnLocation(SpawnFinder.getInstance().findSpawn(true));
+
+                        Location location = SpawnFinder.getInstance().findSpawn(true).add(0.5, 0, 0.5);
+
+                        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.ON_DEATH);
+
+                        Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+                        event.setRespawnLocation(location);
                     }
                 }
             }

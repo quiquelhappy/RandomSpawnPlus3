@@ -3,6 +3,7 @@ package systems.kscott.randomspawnplus3.spawn;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
+import systems.kscott.randomspawnplus3.util.ConfigFile;
 import systems.kscott.randomspawnplus3.util.Locations;
 
 import java.io.IOException;
@@ -28,14 +29,12 @@ public class SpawnCacher {
     }
 
     public void cacheSpawns() {
-
         FileConfiguration spawns = plugin.getSpawns();
         FileConfiguration config = plugin.getConfig();
 
 
         List<String> locationStrings = null;
         locationStrings = spawns.getStringList("spawns");
-
 
         if (locationStrings.size() >= config.getInt("spawn-cache-target")) {
             return;
@@ -45,6 +44,8 @@ public class SpawnCacher {
 
         int spawnCount = config.getInt("spawn-cache-target");
 
+        plugin.getLogger().info("RSP is now caching spawns!");
+        plugin.getLogger().info("This may appear like I'm frozen, but I promise you I'm not :^)");
         for (int i = 0; i <= spawnCount; i++) {
             Location location = null;
             boolean valid = false;
@@ -57,11 +58,8 @@ public class SpawnCacher {
         }
 
         spawns.set("spawns", locations);
-        try {
-            spawns.save("spawns.yml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        plugin.getSpawnsManager().save();
+
     }
 
 }

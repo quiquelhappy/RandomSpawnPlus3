@@ -1,13 +1,15 @@
 <component name="libraryTable">
   <library name="Maven: co.aikar:acf-PAPER:0.5.0-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-SNAPSHOT.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-20191117.162857-158.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-SNAPSHOT-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-20191117.162857-158-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/co/aikar/acf-paper/0.5.0-SNAPSHOT/acf-paper-0.5.0-20191117.162857-158-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -8,6 +8,7 @@ import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class ConfigFile {
 
@@ -43,7 +44,7 @@ public class ConfigFile {
 
     public void save() {
         try {
-            config.save(fileName);
+            config.save(Paths.get(plugin.getDataFolder().getAbsolutePath(), fileName).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -138,7 +138,7 @@ public class SpawnFinder {
 
         if (!isValid) {
             if (debugMode)
-                plugin.getLogger().info("Invalid spawn: "+spawnCheckEvent.getReason());
+                plugin.getLogger().info("Invalid spawn: "+spawnCheckEvent.getValidReason());
         }
 
         if (Blocks.isEmpty(block0)) {

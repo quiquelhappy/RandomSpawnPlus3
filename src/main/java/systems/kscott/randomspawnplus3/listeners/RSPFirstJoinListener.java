@@ -1,6 +1,7 @@
 package systems.kscott.randomspawnplus3.listeners;
 
 import com.earth2me.essentials.User;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
+import systems.kscott.randomspawnplus3.events.RandomSpawnEvent;
+import systems.kscott.randomspawnplus3.events.SpawnType;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 
 public class RSPFirstJoinListener implements Listener {
@@ -43,7 +46,10 @@ public class RSPFirstJoinListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                player.teleport(spawnLoc.toCenterLocation().subtract(0, 0.5, 0));
+                                RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(spawnLoc, player, SpawnType.FIRST_JOIN);
+
+                                Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+                                player.teleport(spawnLoc.toCenterLocation().add(0.5, 0, 0.5).subtract(0, 0.5, 0));
 
                             }
                         }.runTaskLater(plugin, 3);

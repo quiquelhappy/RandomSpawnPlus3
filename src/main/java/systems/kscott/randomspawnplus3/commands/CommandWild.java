@@ -10,6 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
+import systems.kscott.randomspawnplus3.events.RandomSpawnEvent;
+import systems.kscott.randomspawnplus3.events.SpawnCheckEvent;
+import systems.kscott.randomspawnplus3.events.SpawnType;
 import systems.kscott.randomspawnplus3.exceptions.NoCooldownException;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 import systems.kscott.randomspawnplus3.util.Chat;
@@ -53,51 +56,55 @@ public class CommandWild extends BaseCommand {
             int minutes = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60)) % 60);
             int hours = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60 * 60)) % 24);
 
-            HashMap<String, String> placeholders = new HashMap<>();
-
-            placeholders.put("%h", Integer.toString(hours));
-            placeholders.put("%m", Integer.toString(minutes));
-            placeholders.put("%s", Integer.toString(seconds));
-
-            if (hours != 1) {
-                placeholders.put("%a", "s");
-            } else {
-                placeholders.put("%a", "");
-            }
-
-            if (minutes != 1) {
-                placeholders.put("%b", "s");
-            } else {
-                placeholders.put("%b", "");
-            }
-
-            if (seconds != 1) {
-                placeholders.put("%c", "s");
-            } else {
-                placeholders.put("%c", "");
-            }
+            String message = "";
 
             if (hours == 0) {
                 if (minutes == 0) {
-                    Chat.sendToSender(player, Chat.get("wild-tp-cooldown-seconds"), placeholders);
+                    message = Chat.get("wild-tp-cooldown-seconds");
                 } else {
-                    Chat.sendToSender(player, Chat.get("wild-tp-cooldown-minutes"), placeholders);
+                    message = Chat.get("wild-tp-cooldown-minutes");
                 }
             } else {
-                Chat.sendToSender(player, Chat.get("wild-tp-cooldown"), placeholders);
+                message = Chat.get("wild-tp-cooldown");
             }
+
+            message = message.replace("%h", Integer.toString(hours));
+            message = message.replace("%m", Integer.toString(minutes));
+            message = message.replace("%s", Integer.toString(seconds));
+
+            if (hours != 1) {
+                message = message.replace("%a", "s");
+            } else {
+                message = message.replace("%a", "");
+            }
+
+            if (minutes != 1) {
+                message = message.replace("%b", "s");
+            } else {
+                message = message.replace("%b", "");
+            }
+
+            if (seconds != 1) {
+                message = message.replace("%c", "s");
+            } else {
+                message = message.replace("%c", "");
+            }
+            Chat.msg(player, message);
             return;
         }
 
         Location location = SpawnFinder.getInstance().findSpawn(true);
 
-        String message = Chat.get("wild-tp");
-        message = message.replace("%x", Integer.toString(location.getBlockX()));
-        message = message.replace("%y", Integer.toString(location.getBlockY()));
-        message = message.replace("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(player, message);
+        String message = Chat.get("wild-tp")
+                .replace("%x", Integer.toString(location.getBlockX()))
+                .replace("%y", Integer.toString(location.getBlockY()))
+                .replace("%z", Integer.toString(location.getBlockZ()));
+        Chat.msg(player, message);
 
-        player.teleport(location.toCenterLocation().subtract(0, 0.5, 0));
+        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
+
+        Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+        player.teleport(location.add(0.5, 0, 0.5));
         CooldownManager.addCooldown(player);
     }
 
@@ -109,20 +116,24 @@ public class CommandWild extends BaseCommand {
         Player otherPlayer = Bukkit.getPlayer(other);
 
         if (otherPlayer == null) {
-            Chat.sendToSender(player, Chat.get("wild-tp-doesnt-exist"));
+            Chat.msg(player, Chat.get("wild-tp-doesnt-exist"));
             return;
         }
 
-        String message = Chat.get("wild-tp");
-        message = message.replace("%x", Integer.toString(location.getBlockX()));
-        message = message.replace("%y", Integer.toString(location.getBlockY()));
-        message = message.replace("%z", Integer.toString(location.getBlockZ()));
-        Chat.sendToSender(otherPlayer, message);
+        String message = Chat.get("wild-tp")
+                .replace("%x", Integer.toString(location.getBlockX()))
+                .replace("%y", Integer.toString(location.getBlockY()))
+                .replace("%z", Integer.toString(location.getBlockZ()));
+
+        Chat.msg(otherPlayer, message);
 
         message = Chat.get("wild-tp-other");
         message = message.replace("%player", otherPlayer.getName());
-        Chat.sendToSender(player, message);
+        Chat.msg(player, message);
 
-        otherPlayer.teleport(location);
+        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
+
+        Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+        otherPlayer.teleport(location.add(0.5, 0, 0.5));
     }
 }
