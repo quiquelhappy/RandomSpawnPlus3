@@ -1,12 +1,15 @@
 package systems.kscott.randomspawnplus3.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.BukkitCommandContexts;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
@@ -108,9 +111,8 @@ public class CommandWild extends BaseCommand {
         CooldownManager.addCooldown(player);
     }
 
-    @Default
     @CommandPermission("randomspawnplus.wild.others")
-    public void wildOther(Player player, String other) {
+    public void wildOther(ConsoleCommandSender player, String other) {
         Location location = SpawnFinder.getInstance().findSpawn(true);
 
         Player otherPlayer = Bukkit.getPlayer(other);
@@ -131,9 +133,38 @@ public class CommandWild extends BaseCommand {
         message = message.replace("%player", otherPlayer.getName());
         Chat.msg(player, message);
 
-        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
+        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer, SpawnType.WILD_COMMAND);
 
         Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
         otherPlayer.teleport(location.add(0.5, 0, 0.5));
     }
+
+    @CommandPermission("randomspawnplus.wild.others")
+    public void wildOther(CommandSender player, String other) {
+        Location location = SpawnFinder.getInstance().findSpawn(true);
+
+        Player otherPlayer = Bukkit.getPlayer(other);
+
+        if (otherPlayer == null) {
+            Chat.msg(player, Chat.get("wild-tp-doesnt-exist"));
+            return;
+        }
+
+        String message = Chat.get("wild-tp")
+                .replace("%x", Integer.toString(location.getBlockX()))
+                .replace("%y", Integer.toString(location.getBlockY()))
+                .replace("%z", Integer.toString(location.getBlockZ()));
+
+        Chat.msg(otherPlayer, message);
+
+        message = Chat.get("wild-tp-other");
+        message = message.replace("%player", otherPlayer.getName());
+        Chat.msg(player, message);
+
+        RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer, SpawnType.WILD_COMMAND);
+
+        Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+        otherPlayer.teleport(location.add(0.5, 0, 0.5));
+    }
+
 }

@@ -8,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class SpawnCheckEvent extends Event {
 
-    @Getter
+    public static HandlerList getHandlerList() {
+        return HANDLERS_LIST;
+    }
+
     private static final HandlerList HANDLERS_LIST = new HandlerList();
 
     @Getter

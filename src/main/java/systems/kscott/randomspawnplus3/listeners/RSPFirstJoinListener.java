@@ -49,7 +49,7 @@ public class RSPFirstJoinListener implements Listener {
                                 RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(spawnLoc, player, SpawnType.FIRST_JOIN);
 
                                 Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
-                                player.teleport(spawnLoc.toCenterLocation().add(0.5, 0, 0.5).subtract(0, 0.5, 0));
+                                player.teleport(spawnLoc.add(0.5, 0, 0.5));
 
                             }
                         }.runTaskLater(plugin, 3);
