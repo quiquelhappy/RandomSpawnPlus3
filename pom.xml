@@ -6,7 +6,7 @@
 
     <groupId>systems.kscott</groupId>
     <artifactId>randomspawnplus</artifactId>
-    <version>3.1.2</version>
+    <version>3.2.0-BETA</version>
     <packaging>jar</packaging>
 
     <name>RandomSpawnPlus</name>
@@ -56,7 +56,6 @@
                     <include>lang.yml</include>
                     <include>spawns.yml</include>
                 </includes>
-
             </resource>
         </resources>
     </build>

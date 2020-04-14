@@ -42,7 +42,6 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
         SpawnFinder.initialize(this);
         SpawnCacher.initialize(this);
-        SpawnCacher.getInstance().cacheSpawns();
         INSTANCE = this;
 
         new Metrics(this, 6465);
@@ -50,7 +49,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        SpawnCacher.getInstance().save();
     }
 
 
@@ -63,7 +62,9 @@ public final class RandomSpawnPlus extends JavaPlugin {
     public void registerCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
         manager.registerCommand(new CommandWild(this));
-        manager.registerCommand(new CommandRSP(this));
+        if (configManager.getConfig().getBoolean("wild-enabled")) {
+            manager.registerCommand(new CommandRSP(this));
+        }
     }
 
     public static RandomSpawnPlus getInstance() {

@@ -1,18 +1,23 @@
 package systems.kscott.randomspawnplus3.spawn;
 
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.util.ConfigFile;
 import systems.kscott.randomspawnplus3.util.Locations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class SpawnCacher {
 
     public static SpawnCacher INSTANCE;
+
 
     public static void initialize(RandomSpawnPlus plugin) {
         INSTANCE = new SpawnCacher(plugin);
@@ -24,43 +29,143 @@ public class SpawnCacher {
 
     private RandomSpawnPlus plugin;
 
+    @Getter
+    private boolean spawnsRequireSaving;
+
+    @Getter
+    private List<String> cachedSpawns;
+
     public SpawnCacher(RandomSpawnPlus plugin) {
         this.plugin = plugin;
+        this.spawnsRequireSaving = false;
+        this.cachedSpawns = new ArrayList<>();
+        cacheSpawns();
+        runWatchdog();
     }
 
-    public void cacheSpawns() {
+    private void cacheSpawns() {
+        boolean debugMode = plugin.getConfigManager().getConfig().getBoolean("debug-mode");
+
         FileConfiguration spawns = plugin.getSpawns();
         FileConfiguration config = plugin.getConfig();
 
         SpawnFinder finder = SpawnFinder.getInstance();
 
+        List<String> locationStrings = spawns.getStringList("spawns");
 
-        List<String> locationStrings = null;
-        locationStrings = spawns.getStringList("spawns");
+        cachedSpawns.addAll(locationStrings);
 
-        if (locationStrings.size() >= config.getInt("spawn-cache-target")) {
+        int missingLocations = config.getInt("spawn-cache-target") - locationStrings.size();
+
+        if (missingLocations <= 0) {
             return;
         }
 
-        ArrayList<String> locations = new ArrayList<>();
+        List<String> newLocations = new ArrayList<>();
 
-        int spawnCount = config.getInt("spawn-cache-target");
+        Bukkit.getLogger().info("Caching "+missingLocations+" spawns.");
+        for (int i = 0; i <= missingLocations; i++) {
+            new BukkitRunnable() {
 
-        plugin.getLogger().info("RSP is now caching spawns!");
-        plugin.getLogger().info("This may appear like I'm frozen, but I promise you I'm not :^)");
-        for (int i = 0; i <= spawnCount; i++) {
-            Location location = null;
-            boolean valid = false;
+                @Override
+                public void run() {
+                    Location location = null;
+                    boolean valid = false;
 
-            while (!valid) {
-                location = finder.getCandidateLocation();
-                valid = finder.checkSpawn(location);
-            }
-            locations.add(Locations.serializeString(location));
+                    while (!valid) {
+                        location = finder.getCandidateLocation();
+                        valid = finder.checkSpawn(location);
+                    }
+
+                    newLocations.add(Locations.serializeString(location));
+                }
+            }.runTaskLater(plugin, 1);
         }
 
-        spawns.set("spawns", locations);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                /* Wait for all spawns to be cached */
+                if (newLocations.size() <= missingLocations) {
+                    if (debugMode)
+                        Bukkit.getLogger().info(newLocations.size() +", "+ missingLocations);
+                } else {
+                    cachedSpawns.addAll(newLocations);
+                    /* Save spawns to file */
+                    save();
+                    cancel();
+                }
+            }
+        }.runTaskTimerAsynchronously(plugin, 10, 10);
+    }
+
+    public Location getRandomSpawn() {
+        int element = new Random().nextInt(cachedSpawns.size());
+        return Locations.deserializeLocationString(cachedSpawns.get(element));
+    }
+
+    public void deleteSpawn(Location location) {
+        for (Iterator<String> iterator = cachedSpawns.iterator(); iterator.hasNext();) {
+            String locationString = iterator.next();
+            Bukkit.getLogger().info(Locations.serializeString(location)+", "+locationString);
+            if (Locations.serializeString(location).equals(locationString)) {
+                iterator.remove();
+            }
+        }
+        cachedSpawns.removeIf(locationString -> locationString.equals(Locations.serializeString(location)));
+        spawnsRequireSaving = true;
+    }
+
+    public void save() {
+        plugin.getSpawnsManager().getConfig().set("spawns", cachedSpawns);
         plugin.getSpawnsManager().save();
+    }
+
+    private void runWatchdog() {
+        new BukkitRunnable() {
+
+            List<String> spawnCopy = new ArrayList<>(cachedSpawns);
+
+            @Override
+            public void run() {
+                if (spawnCopy != cachedSpawns) {
+                    List<String> spawnCopyCopy = new ArrayList<>(spawnCopy);
+                    List<String> cachedSpawnsCopy = new ArrayList<>(cachedSpawns);
+
+                    spawnCopyCopy.forEach((i) -> {cachedSpawnsCopy.remove(i);});
+                    plugin.getLogger().info(Arrays.toString(cachedSpawnsCopy.toArray()));
+
+                    save();
+                    spawnCopy = new ArrayList<>(cachedSpawns);
+                }
+            }
+        }.runTaskTimerAsynchronously(plugin, 0, 200);
+    }
+
+    public int cleanup() {
+        final int[] removed = {0};
+        for (String locationString : cachedSpawns) {
+            Location location = Locations.deserializeLocationString(locationString);
+            BukkitRunnable runnable = new BukkitRunnable() {
+                int spawnsRemoved = 0;
+                @Override
+                public void run() {
+                    boolean valid = SpawnFinder.getInstance().checkSpawn(location);
+                    if (!valid) {
+                        spawnsRemoved = spawnsRemoved + 1;
+                        deleteSpawn(location);
+                    }
+                    removed[0] = spawnsRemoved;
+                }
+            };
+            runnable.runTask(plugin);
+            try {
+                runnable.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return removed[0];
 
     }
 

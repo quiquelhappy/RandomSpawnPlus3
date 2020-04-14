@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.events.SpawnCheckEvent;
+import systems.kscott.randomspawnplus3.exceptions.FinderTimedOutException;
 import systems.kscott.randomspawnplus3.util.Blocks;
 import systems.kscott.randomspawnplus3.util.Locations;
 import systems.kscott.randomspawnplus3.util.Numbers;
@@ -74,7 +75,7 @@ public class SpawnFinder {
         return new Location(world, candidateX, candidateY, candidateZ);
     }
 
-    private Location getValidLocation(boolean useSpawnCaching) {
+    private Location getValidLocation(boolean useSpawnCaching) throws FinderTimedOutException {
 
         FileConfiguration spawns = plugin.getSpawns();
 
@@ -84,25 +85,28 @@ public class SpawnFinder {
 
         Location location = null;
 
+        int tries = 0;
         while (!valid) {
+            if (tries >= 30) {
+                throw new FinderTimedOutException();
+            }
             if (useCache && useSpawnCaching) {
-
-                List<String> locations = null;
-
-                locations = spawns.getStringList("spawns");
-
-                int i = new Random().nextInt(locations.size());
-                location = Locations.deserializeLocationString(locations.get(i));
+                location = SpawnCacher.getInstance().getRandomSpawn();
             } else {
                 location = getCandidateLocation();
             }
             valid = checkSpawn(location);
+
+            if (!valid && useCache && useSpawnCaching) {
+                SpawnCacher.getInstance().deleteSpawn(location);
+            }
+            tries = tries + 1;
         }
 
         return location;
     }
 
-    public Location findSpawn(boolean useSpawnCaching) {
+    public Location findSpawn(boolean useSpawnCaching) throws FinderTimedOutException {
 
         Location location = getValidLocation(useSpawnCaching);
 

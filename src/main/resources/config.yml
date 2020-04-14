@@ -95,9 +95,12 @@ enable-spawn-cacher: true
 spawn-cache-target: 150
 
 ### /wild ###
+# Note: changes to this variable will require a restart.
 wild-enabled: true
 
 # In seconds, how long between /wild uses?
 # Set to 0 to disable.
 # Set to -1 to blow up everything.
 wild-cooldown: 300
+
+spawn-finder-tries-before-timeout: 35

@@ -19,3 +19,7 @@ wild-tp-doesnt-exist: "&c&l[!] &7That player doesn't exist."
 wild-tp-cooldown: "&c&l[!] &7You must wait &c%h hour%a, %m minute%b, %s second%c&7 to use that command."
 wild-tp-cooldown-minutes: "&c&l[!] &7You must wait &c%m minute%b, %s second%c&7 to use that command."
 wild-tp-cooldown-seconds: "&c&l[!] &7You must wait &c%s second%c&7 to use that command."
+
+console-cannot-use: "&cYou must be player to use this command."
+
+error-finding-spawn: "&cUnfortunately, I could not find a valid spawn for you. Please try again."

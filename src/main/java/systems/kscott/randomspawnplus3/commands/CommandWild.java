@@ -2,10 +2,8 @@ package systems.kscott.randomspawnplus3.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandContexts;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.*;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -16,6 +14,7 @@ import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.events.RandomSpawnEvent;
 import systems.kscott.randomspawnplus3.events.SpawnCheckEvent;
 import systems.kscott.randomspawnplus3.events.SpawnType;
+import systems.kscott.randomspawnplus3.exceptions.FinderTimedOutException;
 import systems.kscott.randomspawnplus3.exceptions.NoCooldownException;
 import systems.kscott.randomspawnplus3.spawn.SpawnFinder;
 import systems.kscott.randomspawnplus3.util.Chat;
@@ -23,6 +22,7 @@ import systems.kscott.randomspawnplus3.util.CooldownManager;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Objects;
 
 @CommandAlias("wild|rtp")
 @Description("Teleport to a random location")
@@ -37,8 +37,127 @@ public class CommandWild extends BaseCommand {
     }
 
     @Default
-    @CommandPermission("randomspawnplus.wild")
-    public void wildSelf(Player player) {
+    public void onCommand(CommandSender sender, @Optional OnlinePlayer otherPlayer) {
+        if (Objects.isNull(otherPlayer)) {
+            if (!(sender instanceof Player)) {
+                Chat.msg(sender, Chat.get("console-cannot-use"));
+                return;
+            }
+
+            Player player = (Player) sender;
+
+            long cooldown = 0;
+
+            try {
+                cooldown = CooldownManager.getCooldown(player);
+            } catch (NoCooldownException ignored) {
+
+            }
+
+            if (player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
+                cooldown = 0;
+            }
+
+            if ((cooldown - Instant.now().toEpochMilli()) >= 0) {
+                if (config.getBoolean("debug-mode"))
+                    plugin.getLogger().info(Long.toString(cooldown));
+
+                int seconds = (int) ((cooldown - Instant.now().toEpochMilli()) / 1000) % 60;
+                int minutes = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60)) % 60);
+                int hours = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60 * 60)) % 24);
+
+                String message = "";
+
+                if (hours == 0) {
+                    if (minutes == 0) {
+                        message = Chat.get("wild-tp-cooldown-seconds");
+                    } else {
+                        message = Chat.get("wild-tp-cooldown-minutes");
+                    }
+                } else {
+                    message = Chat.get("wild-tp-cooldown");
+                }
+
+                message = message.replace("%h", Integer.toString(hours));
+                message = message.replace("%m", Integer.toString(minutes));
+                message = message.replace("%s", Integer.toString(seconds));
+
+                if (hours != 1) {
+                    message = message.replace("%a", "s");
+                } else {
+                    message = message.replace("%a", "");
+                }
+
+                if (minutes != 1) {
+                    message = message.replace("%b", "s");
+                } else {
+                    message = message.replace("%b", "");
+                }
+
+                if (seconds != 1) {
+                    message = message.replace("%c", "s");
+                } else {
+                    message = message.replace("%c", "");
+                }
+                Chat.msg(player, message);
+                return;
+            }
+
+            Location location = null;
+            try {
+                location = SpawnFinder.getInstance().findSpawn(true);
+            } catch (FinderTimedOutException e) {
+                Chat.msg(player, Chat.get("error-finding-spawn"));
+                return;
+            }
+
+            String message = Chat.get("wild-tp")
+                    .replace("%x", Integer.toString(location.getBlockX()))
+                    .replace("%y", Integer.toString(location.getBlockY()))
+                    .replace("%z", Integer.toString(location.getBlockZ()));
+            Chat.msg(player, message);
+
+            RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
+
+            Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+            player.teleport(location.add(0.5, 0, 0.5));
+            CooldownManager.addCooldown(player);
+        } else {
+            Location location = null;
+            try {
+                location = SpawnFinder.getInstance().findSpawn(true);
+            } catch (FinderTimedOutException e) {
+                Chat.msg(otherPlayer.getPlayer(), Chat.get("error-finding-spawn"));
+                return;
+            }
+            String message = Chat.get("wild-tp")
+                    .replace("%x", Integer.toString(location.getBlockX()))
+                    .replace("%y", Integer.toString(location.getBlockY()))
+                    .replace("%z", Integer.toString(location.getBlockZ()));
+
+            Chat.msg(otherPlayer.getPlayer(), message);
+
+            message = Chat.get("wild-tp-other");
+            message = message.replace("%player", otherPlayer.getPlayer().getName());
+            Chat.msg(sender, message);
+
+            RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer.getPlayer(), SpawnType.WILD_COMMAND);
+
+            Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+            otherPlayer.getPlayer().teleport(location.add(0.5, 0, 0.5));
+        }
+    }
+
+    /*@CommandPermission("randomspawnplus.wild")
+    public void wildSelf(CommandSender commandSender) {
+
+        if (!(commandSender instanceof Player)) {
+            Chat.msg(commandSender, Chat.get("console-cannot-use"));
+            return;
+        }
+
+        Player player = (Player) commandSender;
+
         long cooldown = 0;
 
         try {
@@ -112,16 +231,15 @@ public class CommandWild extends BaseCommand {
     }
 
     @CommandPermission("randomspawnplus.wild.others")
-    public void wildOther(ConsoleCommandSender player, String other) {
-        Location location = SpawnFinder.getInstance().findSpawn(true);
-
+    public void wildOther(CommandSender commandSender, String other) {
         Player otherPlayer = Bukkit.getPlayer(other);
 
         if (otherPlayer == null) {
-            Chat.msg(player, Chat.get("wild-tp-doesnt-exist"));
+            Chat.msg(commandSender, Chat.get("wild-tp-doesnt-exist"));
             return;
         }
 
+        Location location = SpawnFinder.getInstance().findSpawn(true);
         String message = Chat.get("wild-tp")
                 .replace("%x", Integer.toString(location.getBlockX()))
                 .replace("%y", Integer.toString(location.getBlockY()))
@@ -131,24 +249,25 @@ public class CommandWild extends BaseCommand {
 
         message = Chat.get("wild-tp-other");
         message = message.replace("%player", otherPlayer.getName());
-        Chat.msg(player, message);
+        Chat.msg(commandSender, message);
 
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer, SpawnType.WILD_COMMAND);
 
         Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
         otherPlayer.teleport(location.add(0.5, 0, 0.5));
     }
+
 
     @CommandPermission("randomspawnplus.wild.others")
-    public void wildOther(CommandSender player, String other) {
-        Location location = SpawnFinder.getInstance().findSpawn(true);
-
+    public void wildOther(ConsoleCommandSender commandSender, String other) {
         Player otherPlayer = Bukkit.getPlayer(other);
 
         if (otherPlayer == null) {
-            Chat.msg(player, Chat.get("wild-tp-doesnt-exist"));
+            Chat.msg(commandSender, Chat.get("wild-tp-doesnt-exist"));
             return;
         }
+
+        Location location = SpawnFinder.getInstance().findSpawn(true);
 
         String message = Chat.get("wild-tp")
                 .replace("%x", Integer.toString(location.getBlockX()))
@@ -159,12 +278,12 @@ public class CommandWild extends BaseCommand {
 
         message = Chat.get("wild-tp-other");
         message = message.replace("%player", otherPlayer.getName());
-        Chat.msg(player, message);
+        Chat.msg(commandSender, message);
 
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer, SpawnType.WILD_COMMAND);
 
         Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
         otherPlayer.teleport(location.add(0.5, 0, 0.5));
-    }
+    }*/
 
 }
