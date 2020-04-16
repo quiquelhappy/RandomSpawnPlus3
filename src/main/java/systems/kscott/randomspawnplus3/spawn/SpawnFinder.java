@@ -12,6 +12,7 @@ import systems.kscott.randomspawnplus3.exceptions.FinderTimedOutException;
 import systems.kscott.randomspawnplus3.util.Blocks;
 import systems.kscott.randomspawnplus3.util.Locations;
 import systems.kscott.randomspawnplus3.util.Numbers;
+import systems.kscott.randomspawnplus3.util.XMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,9 @@ public class SpawnFinder {
             safeBlocks.add(Material.matchMaterial(string));
         }
 
-        safeBlocks.add(Material.AIR);
-        safeBlocks.add(Material.VOID_AIR);
-        safeBlocks.add(Material.CAVE_AIR);
+        safeBlocks.add(XMaterial.AIR.parseMaterial());
+        safeBlocks.add(XMaterial.VOID_AIR.parseMaterial());
+        safeBlocks.add(XMaterial.CAVE_AIR.parseMaterial());
     }
 
     public Location getCandidateLocation() {
@@ -190,7 +191,7 @@ public class SpawnFinder {
     public int getHighestY(World world, int x, int z) {
         int i = 255;
         while (i > 0) {
-            if (!new Location(world, x, i, z).getBlock().getType().isAir()) {
+            if (!Blocks.isEmpty(new Location(world, x, i, z).getBlock())) {
                 if (config.getBoolean("debug-mode"))
                     plugin.getLogger().info(Integer.toString(i));
                 return i;

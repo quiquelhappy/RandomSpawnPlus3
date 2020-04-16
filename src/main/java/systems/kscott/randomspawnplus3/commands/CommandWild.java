@@ -105,7 +105,9 @@ public class CommandWild extends BaseCommand {
 
             Location location = null;
             try {
-                location = SpawnFinder.getInstance().findSpawn(true);
+                location = SpawnFinder.
+                        getInstance().
+                        findSpawn(true);
             } catch (FinderTimedOutException e) {
                 Chat.msg(player, Chat.get("error-finding-spawn"));
                 return;
@@ -144,6 +146,9 @@ public class CommandWild extends BaseCommand {
             RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer.getPlayer(), SpawnType.WILD_COMMAND);
 
             Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+            if (location.isChunkLoaded()) {
+                location.getChunk().load();
+            }
             otherPlayer.getPlayer().teleport(location.add(0.5, 0, 0.5));
         }
     }
