@@ -126,6 +126,13 @@ public class SpawnFinder {
         boolean blockWaterSpawns = config.getBoolean("block-water-spawns");
         boolean blockLavaSpawns = config.getBoolean("block-lava-spawns");
         boolean debugMode = config.getBoolean("debug-mode");
+        boolean blockedSpawnRange = config.getBoolean("blocked-spawns-zone.enabled");
+
+        int blockedMaxX = config.getInt("blocked-spawns-zone.max-x");
+        int blockedMinX = config.getInt("blocked-spawns-zone.min-x");
+        int blockedMaxZ = config.getInt("blocked-spawns-zone.max-z");
+        int blockedMinZ = config.getInt("blocked-spawns-zone.min-z");
+
 
         boolean isValid;
 
@@ -144,6 +151,15 @@ public class SpawnFinder {
         if (!isValid) {
             if (debugMode)
                 plugin.getLogger().info("Invalid spawn: "+spawnCheckEvent.getValidReason());
+        }
+
+        if (blockedSpawnRange) {
+            if (Numbers.betweenExclusive((int) location.getX(), blockedMinX, blockedMaxX)) {
+                isValid = false;
+            }
+            if (Numbers.betweenExclusive((int) location.getZ(), blockedMinZ, blockedMaxZ)) {
+                isValid = false;
+            }
         }
 
         if (Blocks.isEmpty(block0)) {

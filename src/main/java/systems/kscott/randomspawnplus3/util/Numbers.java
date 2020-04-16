@@ -13,4 +13,9 @@ public class Numbers {
         return r.nextInt((max - min) + 1) + min;
     }
 
+    public static boolean betweenExclusive(int x, int min, int max)
+    {
+        return x>min && x<max;
+    }
+
 }
