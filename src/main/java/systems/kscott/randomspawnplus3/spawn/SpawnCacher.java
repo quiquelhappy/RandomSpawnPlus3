@@ -132,7 +132,7 @@ public class SpawnCacher {
                     List<String> spawnCopyCopy = new ArrayList<>(spawnCopy);
                     List<String> cachedSpawnsCopy = new ArrayList<>(cachedSpawns);
 
-                    spawnCopyCopy.forEach((i) -> {cachedSpawnsCopy.remove(i);});
+                    spawnCopyCopy.forEach(cachedSpawnsCopy::remove);
                     //plugin.getLogger().info(Arrays.toString(cachedSpawnsCopy.toArray()));
 
                     save();
