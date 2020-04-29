@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 public class RandomSpawnEvent extends Event {
 
@@ -22,7 +21,6 @@ public class RandomSpawnEvent extends Event {
     private static final HandlerList HANDLERS_LIST = new HandlerList();
 
 
-    @NotNull
     @Override
     public HandlerList getHandlers() {
         return HANDLERS_LIST;

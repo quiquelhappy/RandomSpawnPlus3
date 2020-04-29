@@ -5,7 +5,6 @@ import lombok.Getter;
 import net.ess3.api.IEssentials;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import systems.kscott.randomspawnplus3.commands.CommandRSP;
 import systems.kscott.randomspawnplus3.commands.CommandWild;
 import systems.kscott.randomspawnplus3.listeners.RSPDeathListener;
@@ -75,7 +74,6 @@ public final class RandomSpawnPlus extends JavaPlugin {
         return (IEssentials) getServer().getPluginManager().getPlugin("Essentials");
     }
 
-    @NotNull
     public FileConfiguration getConfig() {
         return configManager.getConfig();
     }
