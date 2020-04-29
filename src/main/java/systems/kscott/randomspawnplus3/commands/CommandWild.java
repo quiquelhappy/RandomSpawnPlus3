@@ -22,6 +22,7 @@ import java.util.Objects;
 
 @CommandAlias("wild|rtp")
 @Description("Teleport to a random location")
+@CommandPermission("randomspawnplus.wild")
 public class CommandWild extends BaseCommand {
 
     private RandomSpawnPlus plugin;
