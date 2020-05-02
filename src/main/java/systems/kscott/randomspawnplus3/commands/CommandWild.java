@@ -113,26 +113,45 @@ public class CommandWild extends BaseCommand {
 
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
 
-            Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
-            PaperLib.teleportAsync(player, location.add(0.5, 0, 0.5));
-            CooldownManager.addCooldown(player);
-        } else {
-            Location location = null;
-            try {
-                location = SpawnFinder.getInstance().findSpawn(true);
-            } catch (FinderTimedOutException e) {
-                Chat.msg(otherPlayer.getPlayer(), Chat.get("error-finding-spawn"));
-                return;
-            }
-            String message = Chat.get("wild-tp")
-                    .replace("%x", Integer.toString(location.getBlockX()))
-                    .replace("%y", Integer.toString(location.getBlockY()))
-                    .replace("%z", Integer.toString(location.getBlockZ()));
+        Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
+        PaperLib.teleportAsync(player, location.add(0.5, 0, 0.5));
+        CooldownManager.addCooldown(player);
 
-        Chat.msg(otherPlayer.getPlayer(), message);
+        if (config.getBoolean("remove-permission-on-first-use") && plugin.getPermissions() != null) {
+            if (player.hasPermission("randomspawnplus.wild")) {
+                Bukkit.getLogger().info("Removing wild perm");
+                plugin.getPermissions().getUserManager().getUser(player.getUniqueId()).data().remove(Node.builder("randomspawnplus.wild").build());
+            }
+        }
+    }
+
+    @Default
+    @CommandPermission("randomspawnplus.wild.others")
+    public void wildOther(CommandSender sender, String otherPlayerString) {
+
+        Player otherPlayer = Bukkit.getPlayer(otherPlayerString);
+
+        if (otherPlayer == null) {
+            Chat.msg(sender, plugin.getLang().getString("invalid-player"));
+            return;
+        }
+
+        Location location = null;
+        try {
+            location = SpawnFinder.getInstance().findSpawn(true);
+        } catch (FinderTimedOutException e) {
+            Chat.msg(otherPlayer, Chat.get("error-finding-spawn"));
+            return;
+        }
+        String message = Chat.get("wild-tp")
+                .replace("%x", Integer.toString(location.getBlockX()))
+                .replace("%y", Integer.toString(location.getBlockY()))
+                .replace("%z", Integer.toString(location.getBlockZ()));
+
+        Chat.msg(otherPlayer, message);
 
         message = Chat.get("wild-tp-other");
-        message = message.replace("%player", otherPlayer.getPlayer().getName());
+        message = message.replace("%player", otherPlayer.getName());
         Chat.msg(sender, message);
 
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, otherPlayer.getPlayer(), SpawnType.WILD_COMMAND);
@@ -141,6 +160,6 @@ public class CommandWild extends BaseCommand {
         if (location.isChunkLoaded()) {
             location.getChunk().load();
         }
-        PaperLib.teleportAsync(otherPlayer.getPlayer(), location.add(0.5, 0, 0.5));
+        PaperLib.teleportAsync(otherPlayer, location.add(0.5, 0, 0.5));
     }
 }
