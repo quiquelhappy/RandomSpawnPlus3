@@ -3,7 +3,7 @@ package systems.kscott.randomspawnplus3;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import net.ess3.api.IEssentials;
-import net.milkbowl.vault.permission.Permission;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,7 +30,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
     private ConfigFile spawnsManager;
 
     @Getter
-    private Permission permissions;
+    private LuckPerms permissions;
 
     @Override
     public void onEnable() {
@@ -50,7 +50,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
         new Metrics(this, 6465);
 
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+        if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
             /* VaultAPI is enabled */
             try {
                 setupPermissions();
@@ -103,9 +103,9 @@ public final class RandomSpawnPlus extends JavaPlugin {
     }
 
     private void setupPermissions() throws Exception {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
         if (rsp == null) {
-            throw new Exception("Error when loading the Vault Permissions API");
+            throw new Exception("Error when loading the Luckperms API");
         }
         permissions = rsp.getProvider();
     }
