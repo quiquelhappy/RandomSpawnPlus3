@@ -91,7 +91,7 @@ public class SpawnFinder {
             if (tries >= 30) {
                 throw new FinderTimedOutException();
             }
-            if (useCache && useSpawnCaching) {
+            if (useCache && useSpawnCaching && SpawnCacher.getInstance().getCachedSpawns().size() != 0) {
                 location = SpawnCacher.getInstance().getRandomSpawn();
             } else {
                 location = getCandidateLocation();
