@@ -127,3 +127,8 @@ wild-cooldown: 300
 
 # When /wild is ran, should RandomSpawnPlus remove the `randomspawnplus.wild` permission from the executor?
 remove-permission-on-first-use: false
+
+# How much should it cost for a user to use /wild?
+# Set to 0 to disable this feature.
+# NOTE: Requires Vault & and a Vault-compatible econ plugin to function!
+wild-cost: 100
