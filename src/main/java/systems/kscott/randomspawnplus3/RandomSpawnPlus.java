@@ -3,7 +3,9 @@ package systems.kscott.randomspawnplus3;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import net.ess3.api.IEssentials;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.kscott.randomspawnplus3.commands.CommandRSP;
 import systems.kscott.randomspawnplus3.commands.CommandWild;
@@ -27,6 +29,9 @@ public final class RandomSpawnPlus extends JavaPlugin {
     @Getter
     private ConfigFile spawnsManager;
 
+    @Getter
+    private Permission permissions;
+
     @Override
     public void onEnable() {
 
@@ -44,6 +49,17 @@ public final class RandomSpawnPlus extends JavaPlugin {
         INSTANCE = this;
 
         new Metrics(this, 6465);
+
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            /* VaultAPI is enabled */
+            try {
+                setupPermissions();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            getLogger().warning("The Vault API is not detected, so the 'remove-permission-on-first-use' config option will not be enabled.");
+        }
     }
 
     @Override
@@ -85,5 +101,14 @@ public final class RandomSpawnPlus extends JavaPlugin {
     public FileConfiguration getSpawns() {
         return spawnsManager.getConfig();
     }
+
+    private void setupPermissions() throws Exception {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp == null) {
+            throw new Exception("Error when loading the Vault Permissions API");
+        }
+        permissions = rsp.getProvider();
+    }
+
 
 }
