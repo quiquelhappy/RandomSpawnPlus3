@@ -27,3 +27,5 @@ error-finding-spawn: "&cUnfortunately, I could not find a valid spawn for you. P
 no-spawns-cached: "The spawn cacher is enabled, but there are no spawns cached. RSP will fall back to on-the-fly spawn generation. This is most likely an issue with your configuration, but you can join the support Discord (or contact apt#8099 on Discord) for help."
 
 invalid-player: "&c[!] &7That player does not exist!"
+
+wild-no-money: "&c[!] &7You don't have enough money to use &b/wild&7!"
