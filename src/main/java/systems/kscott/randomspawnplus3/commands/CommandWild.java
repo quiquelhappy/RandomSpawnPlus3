@@ -3,6 +3,7 @@ package systems.kscott.randomspawnplus3.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import io.papermc.lib.PaperLib;
+import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,6 +98,17 @@ public class CommandWild extends BaseCommand {
             return;
         }
 
+        if (plugin.getEconomy() != null && config.getInt("wild-cost") != 0) {
+            if (!player.hasPermission("randomspawnplus.wild.bypasscost")) {
+                if (plugin.getEconomy().has(player, config.getInt("wild-cost"))) {
+                    plugin.getEconomy().withdrawPlayer(player, config.getInt("wild-cost"));
+                } else {
+                    Chat.msg(player, plugin.getLang().getString("wild-no-money"));
+                    return;
+                }
+            }
+        }
+
         Location location = null;
         try {
             location = SpawnFinder.getInstance().findSpawn(true);
@@ -104,6 +116,7 @@ public class CommandWild extends BaseCommand {
             Chat.msg(player, Chat.get("error-finding-spawn"));
             return;
         }
+
 
         String message = Chat.get("wild-tp")
                 .replace("%x", Integer.toString(location.getBlockX()))
@@ -116,13 +129,6 @@ public class CommandWild extends BaseCommand {
         Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
         PaperLib.teleportAsync(player, location.add(0.5, 0, 0.5));
         CooldownManager.addCooldown(player);
-
-        if (config.getBoolean("remove-permission-on-first-use") && plugin.getPermissions() != null) {
-            if (player.hasPermission("randomspawnplus.wild")) {
-                Bukkit.getLogger().info("Removing wild perm");
-                plugin.getPermissions().getUserManager().getUser(player.getUniqueId()).data().remove(Node.builder("randomspawnplus.wild").build());
-            }
-        }
     }
 
     @Default
