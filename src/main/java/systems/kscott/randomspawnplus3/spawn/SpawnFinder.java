@@ -77,9 +77,6 @@ public class SpawnFinder {
     }
 
     private Location getValidLocation(boolean useSpawnCaching) throws FinderTimedOutException {
-
-        FileConfiguration spawns = plugin.getSpawns();
-
         boolean useCache = config.getBoolean("enable-spawn-cacher");
 
         boolean valid = false;
