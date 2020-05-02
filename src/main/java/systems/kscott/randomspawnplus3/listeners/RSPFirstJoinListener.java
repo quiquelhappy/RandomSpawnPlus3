@@ -1,6 +1,7 @@
 package systems.kscott.randomspawnplus3.listeners;
 
 import com.earth2me.essentials.User;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,7 +52,7 @@ public class RSPFirstJoinListener implements Listener {
                                     RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(spawnLoc, player, SpawnType.FIRST_JOIN);
 
                                     Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
-                                    player.teleport(spawnLoc.add(0.5, 0, 0.5));
+                                    PaperLib.teleportAsync(player, spawnLoc.add(0.5, 0, 0.5));
 
                                 }
                             }.runTaskLater(plugin, 3);

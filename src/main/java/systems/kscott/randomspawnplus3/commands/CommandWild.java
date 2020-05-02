@@ -3,6 +3,7 @@ package systems.kscott.randomspawnplus3.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -119,7 +120,7 @@ public class CommandWild extends BaseCommand {
             RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
 
             Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
-            player.teleport(location.add(0.5, 0, 0.5));
+            PaperLib.teleportAsync(player, location.add(0.5, 0, 0.5));
             CooldownManager.addCooldown(player);
         } else {
             Location location = null;
@@ -146,7 +147,7 @@ public class CommandWild extends BaseCommand {
             if (location.isChunkLoaded()) {
                 location.getChunk().load();
             }
-            otherPlayer.getPlayer().teleport(location.add(0.5, 0, 0.5));
+            PaperLib.teleportAsync(otherPlayer.getPlayer(), location.add(0.5, 0, 0.5));
         }
     }
 
