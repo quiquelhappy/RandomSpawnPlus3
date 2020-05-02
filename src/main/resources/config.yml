@@ -104,6 +104,9 @@ enable-spawn-cacher: true
 # How many locations should RandomSpawnPlus aim to keep cached?
 spawn-cache-target: 150
 
+# How many tries to find a valid spawn before the plugin times out?
+spawn-finder-tries-before-timeout: 35
+
 ### /wild ###
 # Note: changes to this variable will require a restart.
 wild-enabled: true
@@ -112,6 +115,3 @@ wild-enabled: true
 # Set to 0 to disable.
 # Set to -1 to blow up everything.
 wild-cooldown: 300
-
-# How many tries to find a valid spawn before the plugin times out?
-spawn-finder-tries-before-timeout: 35
