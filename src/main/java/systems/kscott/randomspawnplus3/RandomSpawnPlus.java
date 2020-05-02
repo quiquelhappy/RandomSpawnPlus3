@@ -55,7 +55,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
         new Metrics(this, 6465);
 
         if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
-            /* LuckPerms is enabled */
+            /* LuckPerms is installed */
             try {
                 setupPermissions();
             } catch (Exception e) {
@@ -66,6 +66,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
         }
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            /* Vault is installed */
             try {
                 setupEconomy();
             } catch (Exception e) {
