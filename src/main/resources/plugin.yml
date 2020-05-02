@@ -28,6 +28,9 @@ permissions:
   randomspawnplus.wild.bypasscooldown:
     description: Bypass the teleport cooldown
     default: op
+  randomspawnplus.wild.bypasscost:
+    description: Bypass the /wild cost
+    default: op
   randomspawnplus.manage:
     description: Access to the /rsp (and /rsp reload) command
     default: op
