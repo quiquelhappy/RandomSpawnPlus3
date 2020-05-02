@@ -46,15 +46,13 @@ public class CommandWild extends BaseCommand {
 
             long cooldown = 0;
 
-            try {
-                cooldown = CooldownManager.getCooldown(player);
-            } catch (NoCooldownException ignored) {
+        cooldown = CooldownManager.getCooldown(player);
 
             }
 
-            if (player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
-                cooldown = 0;
-            }
+        if (player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
+            cooldown = 0;
+        }
 
             if ((cooldown - Instant.now().toEpochMilli()) >= 0) {
                 if (config.getBoolean("debug-mode"))
