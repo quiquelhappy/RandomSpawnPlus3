@@ -16,9 +16,15 @@ wild-tp-doesnt-exist: "&c&l[!] &7That player doesn't exist."
 
 # Placeholders: %h | %m | %s | %a | %b | %c
 # %a = hour plural, %b = minute plural, %c = second plural
-wild-tp-cooldown: "&c&l[!] &7You must wait &c%h hour%a, %m minute%b, %s second%c&7 to use that command."
-wild-tp-cooldown-minutes: "&c&l[!] &7You must wait &c%m minute%b, %s second%c&7 to use that command."
-wild-tp-cooldown-seconds: "&c&l[!] &7You must wait &c%s second%c&7 to use that command."
+wild-tp-cooldown: "&c&l[!] &7You must wait %delay&7 to use that command."
+
+delay:
+  day: "day"
+  days: "days"
+  hour: "hour"
+  hours: "hours"
+  minute: "minute"
+  minutes: "minutes"
 
 console-cannot-use: "&cYou must be player to use this command."
 
