@@ -69,6 +69,33 @@ public class SpawnFinder {
         int maxX = config.getInt("spawn-range.max-x");
         int maxZ = config.getInt("spawn-range.max-z");
 
+        if (config.getBoolean("blocked-spawns-zone.enabled")) {
+            int minXblocked = config.getInt("blocked-spawns-zone.min-x");
+            int minZblocked = config.getInt("blocked-spawns-zone.min-z");
+            int maxXblocked = config.getInt("blocked-spawns-zone.max-x");
+            int maxZblocked = config.getInt("blocked-spawns-zone.max-z");
+
+            SpawnRegion region1 = new SpawnRegion(minX, minXblocked, minZ, minZblocked);
+            SpawnRegion region2 = new SpawnRegion(minXblocked, maxXblocked, minZblocked, maxZ - maxZblocked);
+            SpawnRegion region3 = new SpawnRegion(maxXblocked, maxX, maxZblocked, maxX);
+            SpawnRegion region4 = new SpawnRegion(minZblocked, maxZ-minZblocked, minZ + minXblocked, maxZ - minZblocked);
+
+            SpawnRegion[] spawnRegions = new SpawnRegion[]{region1, region2, region3, region4};
+
+            SpawnRegion region = spawnRegions[new Random().nextInt(3)];
+
+            minX = region.getMinX();
+            minZ = region.getMinZ();
+            maxX = region.getMaxX();
+            maxZ = region.getMaxZ();
+        }
+
+        System.out.println(minX);
+        System.out.println(minZ);
+        System.out.println(maxX);
+        System.out.println(maxZ);
+
+
         int candidateX = Numbers.getRandomNumberInRange(minX, maxX);
         int candidateZ = Numbers.getRandomNumberInRange(minZ, maxZ);
         int candidateY = getHighestY(world, candidateX, candidateZ);
