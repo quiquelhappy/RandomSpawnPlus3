@@ -50,6 +50,7 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
         SpawnFinder.initialize(this);
         SpawnCacher.initialize(this);
+        Chat.initialize(this);
         INSTANCE = this;
 
         new Metrics(this, 6465);
