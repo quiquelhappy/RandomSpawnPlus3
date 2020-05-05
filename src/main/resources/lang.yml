@@ -14,9 +14,8 @@ wild-tp-other: "&a&l[!] &b%player&7 has been successfully teleported."
 
 wild-tp-doesnt-exist: "&c&l[!] &7That player doesn't exist."
 
-# Placeholders: %h | %m | %s | %a | %b | %c
-# %a = hour plural, %b = minute plural, %c = second plural
-wild-tp-cooldown: "&c&l[!] &7You must wait %delay&7 to use that command."
+# Placeholders: %delay
+wild-tp-cooldown: "&c&l[!] &7You must wait&c%delay%&7 to use that command."
 
 delay:
   day: "day"
@@ -25,6 +24,8 @@ delay:
   hours: "hours"
   minute: "minute"
   minutes: "minutes"
+  second: "second"
+  seconds: "seconds"
 
 console-cannot-use: "&cYou must be player to use this command."
 
