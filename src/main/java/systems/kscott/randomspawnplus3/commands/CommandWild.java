@@ -40,9 +40,7 @@ public class CommandWild extends BaseCommand {
 
         Player player = (Player) sender;
 
-        long cooldown = 0;
-
-        cooldown = CooldownManager.getCooldown(player);
+        int cooldown = CooldownManager.getCooldown(player);
 
 
         if (player.hasPermission("randomspawnplus.wild.bypasscooldown")) {
