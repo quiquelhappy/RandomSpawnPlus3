@@ -54,7 +54,7 @@ public class CommandWild extends BaseCommand {
 
 
             String message = plugin.getLang().getString("wild-tp-cooldown");
-            message = message.replace("%delay%", Chat.timeLeft(cooldown/1000 - Instant.now().getEpochSecond()));
+            message = message.replace("%delay", Chat.timeLeft(cooldown/1000 - Instant.now().getEpochSecond()));
 
             Chat.msg(player, message);
             return;

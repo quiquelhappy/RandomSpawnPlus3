@@ -15,7 +15,7 @@ wild-tp-other: "&a&l[!] &b%player&7 has been successfully teleported."
 wild-tp-doesnt-exist: "&c&l[!] &7That player doesn't exist."
 
 # Placeholders: %delay
-wild-tp-cooldown: "&c&l[!] &7You must wait&c%delay%&7 to use that command."
+wild-tp-cooldown: "&c&l[!] &7You must wait&c%delay&7 to use that command."
 
 delay:
   day: "day"
