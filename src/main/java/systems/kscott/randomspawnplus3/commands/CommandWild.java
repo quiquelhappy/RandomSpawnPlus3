@@ -2,6 +2,7 @@ package systems.kscott.randomspawnplus3.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import com.earth2me.essentials.User;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,6 +85,15 @@ public class CommandWild extends BaseCommand {
                 .replace("%y", Integer.toString(location.getBlockY()))
                 .replace("%z", Integer.toString(location.getBlockZ()));
         Chat.msg(player, message);
+
+        if (config.getBoolean("home-on-wild")) {
+            User user = plugin.getEssentials().getUser(player);
+            if (!user.hasHome()) {
+                user.setHome("home", location);
+                user.save();
+            }
+        }
+
 
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
 

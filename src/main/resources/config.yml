@@ -132,3 +132,6 @@ remove-permission-on-first-use: false
 # Set to 0 to disable this feature.
 # NOTE: Requires Vault & and a Vault-compatible econ plugin to function!
 wild-cost: 100
+
+# Will set an Essentials home if no home is set on /wild
+home-on-wild: true
