@@ -16,27 +16,6 @@ config-version: 1
 # What world to respawn players in?
 respawn-world: world
 
-# The spawn range RandomSpawnPlus will look within.
-spawn-range:
-  max-x: 1000
-  min-x: -1000
-  max-z: 1000
-  min-z: -1000
-
-# Disable spawns within this region?
-blocked-spawns-zone:
-  enabled: true
-  max-x: 100
-  min-x: -100
-  max-z: 100
-  min-z: -100
-
-# Will RandomSpawnPlus block spawns that will put the player in water?
-block-water-spawns: true
-
-# Will RandomSpawnPlus block spawns that will put the player in lava?
-block-lava-spawns: true
-
 # Will print lots of info to console! Only use if you know what you are doing :P
 debug-mode: false
 
@@ -99,6 +78,27 @@ essentials-home-teleport: false
 
 # Should RandomSpawnPlus set the user's Essentials home 'home' on first-join random spawn?
 essentials-home-on-first-spawn: false
+
+# The spawn range RandomSpawnPlus will look within.
+spawn-range:
+  max-x: 1000
+  min-x: -1000
+  max-z: 1000
+  min-z: -1000
+
+# Disable spawns within this region?
+blocked-spawns-zone:
+  enabled: true
+  max-x: 100
+  min-x: -100
+  max-z: 100
+  min-z: -100
+
+# Will RandomSpawnPlus block spawns that will put the player in water?
+block-water-spawns: true
+
+# Will RandomSpawnPlus block spawns that will put the player in lava?
+block-lava-spawns: true
 
 ####################
 ### Spawn Cacher ###
