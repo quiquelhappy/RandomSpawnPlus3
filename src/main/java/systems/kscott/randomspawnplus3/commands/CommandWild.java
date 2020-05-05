@@ -103,7 +103,7 @@ public class CommandWild extends BaseCommand {
             return;
         }
 
-        Location location = null;
+        Location location;
         try {
             location = SpawnFinder.getInstance().findSpawn(true);
         } catch (FinderTimedOutException e) {
