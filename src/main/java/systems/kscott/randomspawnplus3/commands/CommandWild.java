@@ -3,8 +3,6 @@ package systems.kscott.randomspawnplus3.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import io.papermc.lib.PaperLib;
-import net.luckperms.api.model.data.DataMutateResult;
-import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -42,8 +40,6 @@ public class CommandWild extends BaseCommand {
 
         Player player = (Player) sender;
 
-        Bukkit.getLogger().info(Boolean.toString(player.hasPermission("randomspawnplus.wild")));
-
         long cooldown = 0;
 
         cooldown = CooldownManager.getCooldown(player);
@@ -57,47 +53,14 @@ public class CommandWild extends BaseCommand {
             if (config.getBoolean("debug-mode"))
                 plugin.getLogger().info(Long.toString(cooldown));
 
-            int seconds = (int) ((cooldown - Instant.now().toEpochMilli()) / 1000) % 60;
-            int minutes = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60)) % 60);
-            int hours = (int) (((cooldown - Instant.now().toEpochMilli()) / (1000 * 60 * 60)) % 24);
 
-            String message = "";
+            String message = plugin.getLang().getString("wild-tp-cooldown");
+            message = message.replace("%delay%", Chat.timeLeft(cooldown/1000 - Instant.now().getEpochSecond()));
 
-            if (hours == 0) {
-                if (minutes == 0) {
-                    message = Chat.get("wild-tp-cooldown-seconds");
-                } else {
-                    message = Chat.get("wild-tp-cooldown-minutes");
-                }
-            } else {
-                message = Chat.get("wild-tp-cooldown");
-            }
-
-            message = message.replace("%h", Integer.toString(hours));
-            message = message.replace("%m", Integer.toString(minutes));
-            message = message.replace("%s", Integer.toString(seconds));
-
-            if (hours != 1) {
-                message = message.replace("%a", "s");
-            } else {
-                message = message.replace("%a", "");
-            }
-
-            if (minutes != 1) {
-                message = message.replace("%b", "s");
-            } else {
-                message = message.replace("%b", "");
-            }
-
-            if (seconds != 1) {
-                message = message.replace("%c", "s");
-            } else {
-                message = message.replace("%c", "");
-            }
             Chat.msg(player, message);
             return;
-        }
 
+        }
         if (plugin.getEconomy() != null && config.getInt("wild-cost") != 0) {
             if (!player.hasPermission("randomspawnplus.wild.bypasscost")) {
                 if (plugin.getEconomy().has(player, config.getInt("wild-cost"))) {

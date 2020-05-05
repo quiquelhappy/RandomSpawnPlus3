@@ -84,10 +84,10 @@ public class Chat {
         long hours = timeoutSeconds / 3600L % 24L;
         long minutes = timeoutSeconds / 60L % 60L;
         long seconds = timeoutSeconds % 60L;
-        return (days > 0L ? " " + days + (days != 1L ? lang.getString("delay.days") : "delay.day") : "")
-                + (hours > 0L ? " " + hours + "h" + (hours != 1L ? lang.getString("delay.hours") : "delay.hour") : "")
-                + (minutes > 0L ? " " + minutes + "m" + (minutes != 1L ? lang.getString("delay.minute") : "delay.minute") : "")
-                + (seconds > 0L ? " " + seconds + "s" + (seconds != 1L ? lang.getString("delay.second") : "delay.seconds") : "");
+        return (days > 0L ? " " + days + " " + (days != 1 ? lang.getString("delay.days") : lang.getString("delay.day")) : "")
+                + (hours > 0L ? " " + hours + " " + (hours != 1 ? lang.getString("delay.hours") : lang.getString("delay.hour")) : "")
+                + (minutes > 0L ? " " + minutes + " " + (minutes != 1 ? lang.getString("delay.minutes") : lang.getString("delay.minute")) : "")
+                + (seconds > 0L ? " " + seconds + " " + (seconds != 1 ? lang.getString("delay.seconds") : lang.getString("delay.second")) : "");
     }
 
     public static String formatDoubleValue(double value) {
