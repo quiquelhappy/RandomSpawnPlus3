@@ -2,7 +2,6 @@ package systems.kscott.randomspawnplus3.util;
 
 import org.bukkit.entity.Player;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
-import systems.kscott.randomspawnplus3.exceptions.NoCooldownException;
 
 import java.time.Instant;
 import java.util.Date;
@@ -19,9 +18,9 @@ public class CooldownManager {
         cooldowns.put(p.getUniqueId().toString(), future);
     }
 
-    public static long getCooldown(Player p) throws NoCooldownException {
+    public static long getCooldown(Player p) {
         if (!cooldowns.containsKey(p.getUniqueId().toString())) {
-            throw new NoCooldownException();
+            return 0;
         }
         return cooldowns.get(p.getUniqueId().toString());
     }

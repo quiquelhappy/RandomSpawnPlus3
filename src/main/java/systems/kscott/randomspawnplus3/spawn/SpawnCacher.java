@@ -5,13 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
-import systems.kscott.randomspawnplus3.util.ConfigFile;
 import systems.kscott.randomspawnplus3.util.Locations;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SpawnCacher {
@@ -133,40 +129,10 @@ public class SpawnCacher {
                     List<String> cachedSpawnsCopy = new ArrayList<>(cachedSpawns);
 
                     spawnCopyCopy.forEach(cachedSpawnsCopy::remove);
-                    //plugin.getLogger().info(Arrays.toString(cachedSpawnsCopy.toArray()));
-
                     save();
                     spawnCopy = new ArrayList<>(cachedSpawns);
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 0, 200);
     }
-
-    public int cleanup() {
-        final int[] removed = {0};
-        for (String locationString : cachedSpawns) {
-            Location location = Locations.deserializeLocationString(locationString);
-            BukkitRunnable runnable = new BukkitRunnable() {
-                int spawnsRemoved = 0;
-                @Override
-                public void run() {
-                    boolean valid = SpawnFinder.getInstance().checkSpawn(location);
-                    if (!valid) {
-                        spawnsRemoved = spawnsRemoved + 1;
-                        deleteSpawn(location);
-                    }
-                    removed[0] = spawnsRemoved;
-                }
-            };
-            runnable.runTask(plugin);
-            try {
-                runnable.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        return removed[0];
-
-    }
-
 }

@@ -3,7 +3,10 @@ package systems.kscott.randomspawnplus3;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import net.ess3.api.IEssentials;
+import net.luckperms.api.LuckPerms;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.kscott.randomspawnplus3.commands.CommandRSP;
 import systems.kscott.randomspawnplus3.commands.CommandWild;
@@ -27,6 +30,12 @@ public final class RandomSpawnPlus extends JavaPlugin {
     @Getter
     private ConfigFile spawnsManager;
 
+    @Getter
+    private LuckPerms permissions;
+
+    @Getter
+    private Economy economy;
+
     @Override
     public void onEnable() {
 
@@ -41,9 +50,32 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
         SpawnFinder.initialize(this);
         SpawnCacher.initialize(this);
+        Chat.initialize(this);
         INSTANCE = this;
 
         new Metrics(this, 6465);
+
+        if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
+            /* LuckPerms is installed */
+            try {
+                setupPermissions();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            getLogger().warning("The LuckPerms API is not detected, so the 'remove-permission-on-first-use' config option will not be enabled.");
+        }
+
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            /* Vault is installed */
+            try {
+                setupEconomy();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            getLogger().warning("The Vault API is not detected, so /wild cost will not be enabled.");
+        }
     }
 
     @Override
@@ -85,5 +117,22 @@ public final class RandomSpawnPlus extends JavaPlugin {
     public FileConfiguration getSpawns() {
         return spawnsManager.getConfig();
     }
+
+    private void setupPermissions() throws Exception {
+        RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
+        if (rsp == null) {
+            throw new Exception("Error when loading the LuckPerms API");
+        }
+        permissions = rsp.getProvider();
+    }
+
+    private void setupEconomy() throws Exception {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            throw new Exception("Error when loading the Vault API");
+        }
+        economy = rsp.getProvider();
+    }
+
 
 }

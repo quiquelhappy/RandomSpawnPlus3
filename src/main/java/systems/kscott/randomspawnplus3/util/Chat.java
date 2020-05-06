@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -17,6 +18,10 @@ public class Chat {
 
     @Setter
     private static FileConfiguration lang;
+
+    public static void initialize(RandomSpawnPlus plugin) {
+        lang = plugin.getLang();
+    }
 
     public static String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
@@ -79,7 +84,10 @@ public class Chat {
         long hours = timeoutSeconds / 3600L % 24L;
         long minutes = timeoutSeconds / 60L % 60L;
         long seconds = timeoutSeconds % 60L;
-        return (days > 0L ? " " + days + "d" + (days != 1L ? "" : "") : "") + (hours > 0L ? " " + hours + "h" + (hours != 1L ? "" : "") : "") + (minutes > 0L ? " " + minutes + "m" + (minutes != 1L ? "" : "") : "") + (seconds > 0L ? " " + seconds + "s" + (seconds != 1L ? "" : "") : "");
+        return (days > 0L ? " " + days + " " + (days != 1 ? lang.getString("delay.days") : lang.getString("delay.day")) : "")
+                + (hours > 0L ? " " + hours + " " + (hours != 1 ? lang.getString("delay.hours") : lang.getString("delay.hour")) : "")
+                + (minutes > 0L ? " " + minutes + " " + (minutes != 1 ? lang.getString("delay.minutes") : lang.getString("delay.minute")) : "")
+                + (seconds > 0L ? " " + seconds + " " + (seconds != 1 ? lang.getString("delay.seconds") : lang.getString("delay.second")) : "");
     }
 
     public static String formatDoubleValue(double value) {

@@ -25,7 +25,6 @@ public class CommandRSP extends BaseCommand {
         Chat.msg(player, "");
         Chat.msg(player, "&b/rsp &8- &7The help menu.");
         Chat.msg(player, "&b/rsp reload &8- &7Reload the plugin configuration.");
-        Chat.msg(player, "&b/rsp cleanup &8- &7Remove all invalid spawns.");
         Chat.msg(player, "&b/wild &8- &7Randomly teleport yourself.");
         Chat.msg(player, "&b/wild <other> &8- &7Randomly teleport another player.");
         Chat.msg(player, "&7Need help? Check out &bdocs.randomspawnpl.us&7.");
@@ -38,11 +37,5 @@ public class CommandRSP extends BaseCommand {
         plugin.getSpawnsManager().reload();
         Chat.setLang(plugin.getLangManager().getConfig());
         Chat.msg(player, "&8[&3RandomSpawnPlus&8] &7Reloaded &bconfig.yml&7, &blang.yml&7, and &bspawns.yml&7.");
-    }
-
-    @Subcommand("cleanup|clean")
-    public void _cleanup(CommandSender player) {
-        int i = SpawnCacher.getInstance().cleanup();
-        player.sendMessage(String.valueOf(i));
     }
 }
