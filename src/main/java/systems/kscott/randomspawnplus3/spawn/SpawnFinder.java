@@ -10,7 +10,6 @@ import systems.kscott.randomspawnplus3.RandomSpawnPlus;
 import systems.kscott.randomspawnplus3.events.SpawnCheckEvent;
 import systems.kscott.randomspawnplus3.exceptions.FinderTimedOutException;
 import systems.kscott.randomspawnplus3.util.Blocks;
-import systems.kscott.randomspawnplus3.util.Locations;
 import systems.kscott.randomspawnplus3.util.Numbers;
 import systems.kscott.randomspawnplus3.util.XMaterial;
 

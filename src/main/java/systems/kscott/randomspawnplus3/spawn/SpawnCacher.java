@@ -5,13 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
-import systems.kscott.randomspawnplus3.util.ConfigFile;
 import systems.kscott.randomspawnplus3.util.Locations;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SpawnCacher {
