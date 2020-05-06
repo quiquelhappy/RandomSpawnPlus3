@@ -92,9 +92,9 @@ public final class RandomSpawnPlus extends JavaPlugin {
 
     public void registerCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
-        manager.registerCommand(new CommandWild(this));
+        manager.registerCommand(new CommandRSP(this));
         if (configManager.getConfig().getBoolean("wild-enabled")) {
-            manager.registerCommand(new CommandRSP(this));
+            manager.registerCommand(new CommandWild(this));
         }
     }
 
