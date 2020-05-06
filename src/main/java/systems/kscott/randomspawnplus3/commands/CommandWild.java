@@ -4,6 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.earth2me.essentials.User;
 import io.papermc.lib.PaperLib;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -92,6 +94,13 @@ public class CommandWild extends BaseCommand {
                 user.setHome("home", location);
                 user.save();
             }
+        }
+
+        if (config.getBoolean("remove-permission-on-first-use")) {
+            LuckPerms luckPerms = plugin.getPermissions();
+            net.luckperms.api.model.user.User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+            luckPerms.getUserManager().getUser(player.getUniqueId()).data().add(Node.builder("randomspawnplus.wild").value(false).build());
+            luckPerms.getUserManager().savePlayerData(player.getUniqueId(), player.getName());
         }
 
 
