@@ -98,7 +98,6 @@ public class CommandWild extends BaseCommand {
 
         if (config.getBoolean("remove-permission-on-first-use")) {
             LuckPerms luckPerms = plugin.getPermissions();
-            net.luckperms.api.model.user.User user = luckPerms.getUserManager().getUser(player.getUniqueId());
             luckPerms.getUserManager().getUser(player.getUniqueId()).data().add(Node.builder("randomspawnplus.wild").value(false).build());
             luckPerms.getUserManager().savePlayerData(player.getUniqueId(), player.getName());
         }
