@@ -126,6 +126,7 @@ wild-enabled: true
 wild-cooldown: 300
 
 # When /wild is ran, should RandomSpawnPlus remove the `randomspawnplus.wild` permission from the executor?
+# NOTE: Requires LuckPerms to be installed to manage permissions.
 remove-permission-on-first-use: false
 
 # How much should it cost for a user to use /wild?
