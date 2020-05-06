@@ -137,32 +137,4 @@ public class SpawnCacher {
             }
         }.runTaskTimerAsynchronously(plugin, 0, 200);
     }
-
-    public int cleanup() {
-        final int[] removed = {0};
-        for (String locationString : cachedSpawns) {
-            Location location = Locations.deserializeLocationString(locationString);
-            BukkitRunnable runnable = new BukkitRunnable() {
-                int spawnsRemoved = 0;
-                @Override
-                public void run() {
-                    boolean valid = SpawnFinder.getInstance().checkSpawn(location);
-                    if (!valid) {
-                        spawnsRemoved = spawnsRemoved + 1;
-                        deleteSpawn(location);
-                    }
-                    removed[0] = spawnsRemoved;
-                }
-            };
-            runnable.runTask(plugin);
-            try {
-                runnable.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        return removed[0];
-
-    }
-
 }
