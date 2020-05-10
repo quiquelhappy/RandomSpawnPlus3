@@ -40,7 +40,7 @@ public class SpawnFinder {
         this.config = plugin.getConfig();
 
         /* Setup safeblocks */
-        List<String> safeBlockStrings = new ArrayList<>();
+        List<String> safeBlockStrings;
         safeBlockStrings = config.getStringList("safe-blocks");
 
         safeBlocks = new ArrayList<>();
