@@ -40,7 +40,7 @@ public class SpawnFinder {
         this.config = plugin.getConfig();
 
         /* Setup safeblocks */
-        List<String> safeBlockStrings = new ArrayList<>();
+        List<String> safeBlockStrings;
         safeBlockStrings = config.getStringList("safe-blocks");
 
         safeBlocks = new ArrayList<>();
@@ -149,6 +149,10 @@ public class SpawnFinder {
     }
 
     public boolean checkSpawn(Location location) {
+        if (location == null) {
+            return false;
+        }
+
         boolean blockWaterSpawns = config.getBoolean("block-water-spawns");
         boolean blockLavaSpawns = config.getBoolean("block-lava-spawns");
         boolean debugMode = config.getBoolean("debug-mode");
@@ -159,14 +163,24 @@ public class SpawnFinder {
         int blockedMaxZ = config.getInt("blocked-spawns-zone.max-z");
         int blockedMinZ = config.getInt("blocked-spawns-zone.min-z");
 
-
         boolean isValid;
 
         Location locClone = location.clone();
 
+        if (locClone == null) {
+            return false;
+        }
+        if (!location.isChunkLoaded()) {
+            location.getChunk().load();
+        }
+
         Block block0 = locClone.getBlock();
         Block block1 = locClone.add(0, 1, 0).getBlock();
         Block block2 = locClone.add(0, 1, 0).getBlock();
+
+        if (block0 == null || block1 == null || block2 == null) {
+            return false;
+        }
 
         SpawnCheckEvent spawnCheckEvent = new SpawnCheckEvent(location);
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.ess3.api.IEssentials;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,10 +32,10 @@ public final class RandomSpawnPlus extends JavaPlugin {
     private ConfigFile spawnsManager;
 
     @Getter
-    private LuckPerms permissions;
+    private Economy economy;
 
     @Getter
-    private Economy economy;
+    private LuckPerms luckPerms;
 
     @Override
     public void onEnable() {
@@ -118,16 +119,16 @@ public final class RandomSpawnPlus extends JavaPlugin {
         return spawnsManager.getConfig();
     }
 
-    private void setupPermissions() throws Exception {
+    private void setupPermissions() {
         RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
         if (rsp == null) {
-            throw new Exception("Error when loading the LuckPerms API");
+            luckPerms = null;
         }
-        permissions = rsp.getProvider();
+        luckPerms = rsp.getProvider();
     }
 
     private void setupEconomy() throws Exception {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             throw new Exception("Error when loading the Vault API");
         }

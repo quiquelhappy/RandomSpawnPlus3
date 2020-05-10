@@ -96,13 +96,6 @@ public class CommandWild extends BaseCommand {
             }
         }
 
-        if (config.getBoolean("remove-permission-on-first-use")) {
-            LuckPerms luckPerms = plugin.getPermissions();
-            luckPerms.getUserManager().getUser(player.getUniqueId()).data().add(Node.builder("randomspawnplus.wild").value(false).build());
-            luckPerms.getUserManager().savePlayerData(player.getUniqueId(), player.getName());
-        }
-
-
         RandomSpawnEvent randomSpawnEvent = new RandomSpawnEvent(location, player, SpawnType.WILD_COMMAND);
 
         Bukkit.getServer().getPluginManager().callEvent(randomSpawnEvent);
