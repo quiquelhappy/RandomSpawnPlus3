@@ -153,8 +153,6 @@ public class SpawnFinder {
             return false;
         }
 
-        Bukkit.getLogger().info("" + location.getX()+" "+location.getY()+" "+location.getZ());
-
         boolean blockWaterSpawns = config.getBoolean("block-water-spawns");
         boolean blockLavaSpawns = config.getBoolean("block-lava-spawns");
         boolean debugMode = config.getBoolean("debug-mode");
