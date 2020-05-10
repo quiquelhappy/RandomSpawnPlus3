@@ -6,7 +6,7 @@
 
     <groupId>systems.kscott</groupId>
     <artifactId>randomspawnplus</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3</version>
     <packaging>jar</packaging>
 
     <name>RandomSpawnPlus</name>
