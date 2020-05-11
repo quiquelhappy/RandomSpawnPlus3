@@ -170,7 +170,7 @@ public class SpawnFinder {
         if (locClone == null) {
             return false;
         }
-        if (!location.isChunkLoaded()) {
+        if (!location.getChunk().isLoaded()) {
             location.getChunk().load();
         }
 
