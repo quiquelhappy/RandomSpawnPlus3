@@ -1,9 +1,7 @@
 package systems.kscott.randomspawnplus3.spawn;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import io.papermc.lib.PaperLib;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import systems.kscott.randomspawnplus3.RandomSpawnPlus;
@@ -16,6 +14,8 @@ import systems.kscott.randomspawnplus3.util.XMaterial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class SpawnFinder {
 
@@ -170,17 +170,21 @@ public class SpawnFinder {
         if (locClone == null) {
             return false;
         }
-        if (!location.getChunk().isLoaded()) {
-            location.getChunk().load();
-        }
 
-        Block block0 = locClone.getBlock();
-        Block block1 = locClone.add(0, 1, 0).getBlock();
-        Block block2 = locClone.add(0, 1, 0).getBlock();
+        Chunk chunk;
 
-        if (block0 == null || block1 == null || block2 == null) {
+        CompletableFuture<Chunk> chunkCompletableFuture = PaperLib.getChunkAtAsync(location);
+
+        try {
+            chunk = chunkCompletableFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
             return false;
         }
+
+        Block block0 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() & 0xF, locClone.getBlockZ() & 0xF);
+        Block block1 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() + 1 & 0xF, locClone.getBlockZ() & 0xF);
+        Block block2 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() + 2 & 0xF, locClone.getBlockZ() & 0xF);
 
         SpawnCheckEvent spawnCheckEvent = new SpawnCheckEvent(location);
 
