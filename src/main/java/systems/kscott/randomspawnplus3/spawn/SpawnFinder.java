@@ -167,10 +167,6 @@ public class SpawnFinder {
 
         Location locClone = location.clone();
 
-        if (locClone == null) {
-            return false;
-        }
-
         Chunk chunk;
 
         CompletableFuture<Chunk> chunkCompletableFuture = PaperLib.getChunkAtAsync(location);
@@ -185,6 +181,10 @@ public class SpawnFinder {
         Block block0 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() & 0xF, locClone.getBlockZ() & 0xF);
         Block block1 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() + 1 & 0xF, locClone.getBlockZ() & 0xF);
         Block block2 = chunk.getBlock(locClone.getBlockX() & 0xF, locClone.getBlockY() + 2 & 0xF, locClone.getBlockZ() & 0xF);
+
+        if (block0 == null || block1 == null || block2 == null) {
+            return false;
+        }
 
         SpawnCheckEvent spawnCheckEvent = new SpawnCheckEvent(location);
 
