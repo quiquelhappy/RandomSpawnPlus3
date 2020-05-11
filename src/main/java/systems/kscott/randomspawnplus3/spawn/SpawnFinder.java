@@ -59,6 +59,7 @@ public class SpawnFinder {
         if (worldString == null) {
             plugin.getLogger().severe("You've incorrectly defined the `respawn-world` key in the config.");
             plugin.getServer().getPluginManager().disablePlugin(plugin);
+            return null;
         }
 
         World world = Bukkit.getWorld(worldString);
@@ -66,6 +67,7 @@ public class SpawnFinder {
         if (world == null) {
             plugin.getLogger().severe("The world '"+worldString+"' is invalid. Please change the 'respawn-world' key in the config.");
             plugin.getServer().getPluginManager().disablePlugin(plugin);
+            return null;
         }
 
         int minX = config.getInt("spawn-range.min-x");
