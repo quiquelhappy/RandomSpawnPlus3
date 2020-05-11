@@ -103,7 +103,6 @@ public class SpawnCacher {
     public void deleteSpawn(Location location) {
         for (Iterator<String> iterator = cachedSpawns.iterator(); iterator.hasNext();) {
             String locationString = iterator.next();
-            //Bukkit.getLogger().info(Locations.serializeString(location)+", "+locationString);
             if (Locations.serializeString(location).equals(locationString)) {
                 iterator.remove();
             }
