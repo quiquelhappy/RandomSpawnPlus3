@@ -56,6 +56,11 @@ public class SpawnFinder {
     public Location getCandidateLocation() {
         String worldString = config.getString("respawn-world");
 
+        if (worldString == null) {
+            plugin.getLogger().severe("You've incorrectly defined the `respawn-world` key in the config.");
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
+        }
+
         World world = Bukkit.getWorld(worldString);
 
         if (world == null) {
