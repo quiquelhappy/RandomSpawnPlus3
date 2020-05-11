@@ -36,7 +36,6 @@ public class SpawnCacher {
         this.spawnsRequireSaving = false;
         this.cachedSpawns = new ArrayList<>();
         cacheSpawns();
-        runWatchdog();
     }
 
     private void cacheSpawns() {
@@ -101,37 +100,12 @@ public class SpawnCacher {
     }
 
     public void deleteSpawn(Location location) {
-        for (Iterator<String> iterator = cachedSpawns.iterator(); iterator.hasNext();) {
-            String locationString = iterator.next();
-            if (Locations.serializeString(location).equals(locationString)) {
-                iterator.remove();
-            }
-        }
-        cachedSpawns.removeIf(locationString -> locationString.equals(Locations.serializeString(location)));
+        cachedSpawns.removeIf(locationString -> Locations.serializeString(location).equals(locationString));
         spawnsRequireSaving = true;
     }
 
     public void save() {
         plugin.getSpawnsManager().getConfig().set("spawns", cachedSpawns);
         plugin.getSpawnsManager().save();
-    }
-
-    private void runWatchdog() {
-        new BukkitRunnable() {
-
-            List<String> spawnCopy = new ArrayList<>(cachedSpawns);
-
-            @Override
-            public void run() {
-                if (spawnCopy != cachedSpawns) {
-                    List<String> spawnCopyCopy = new ArrayList<>(spawnCopy);
-                    List<String> cachedSpawnsCopy = new ArrayList<>(cachedSpawns);
-
-                    spawnCopyCopy.forEach(cachedSpawnsCopy::remove);
-                    save();
-                    spawnCopy = new ArrayList<>(cachedSpawns);
-                }
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 200);
     }
 }
