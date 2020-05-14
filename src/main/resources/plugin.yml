@@ -2,35 +2,6 @@ name: RandomSpawnPlus
 version: ${project.version}
 main: systems.kscott.randomspawnplus3.RandomSpawnPlus
 api-version: 1.13
-softdepend: [Essentials, Factions, Vault, LuckPerms]
 authors: [89apt89]
 description: A comprehensive random spawning plugin for modern Minecraft versions.
 load: POSTWORLD
-
-commands:
-  wild:
-    description: Get a wild spawn
-    usage: /wild [player]
-  rsp:
-    description: Main plugin command
-    usage: /rsp
-
-permissions:
-  randomspawnplus.randomspawn:
-    description: Enable random spawns
-    default: op
-  randomspawnplus.wild:
-    description: Teleport to a random location
-    default: op
-  randomspawnplus.wild.others:
-    description: Teleport others to a random location
-    default: op
-  randomspawnplus.wild.bypasscooldown:
-    description: Bypass the teleport cooldown
-    default: op
-  randomspawnplus.wild.bypasscost:
-    description: Bypass the /wild cost
-    default: op
-  randomspawnplus.manage:
-    description: Access to the /rsp (and /rsp reload) command
-    default: op
