@@ -6,7 +6,7 @@
 
     <groupId>systems.kscott</groupId>
     <artifactId>randomspawnplus</artifactId>
-    <version>3.4.3</version>
+    <version>3.4.4</version>
     <packaging>jar</packaging>
 
     <name>RandomSpawnPlus</name>
@@ -38,7 +38,7 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>systems.kscott.randomspawnplus3.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>systems.kscott.randomspawnplus.acf</shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                 </configuration>
