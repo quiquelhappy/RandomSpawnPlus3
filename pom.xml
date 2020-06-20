@@ -6,7 +6,7 @@
 
     <groupId>systems.kscott</groupId>
     <artifactId>randomspawnplus</artifactId>
-    <version>3.4.3</version>
+    <version>3.4.4</version>
     <packaging>jar</packaging>
 
     <name>RandomSpawnPlus</name>
@@ -82,7 +82,7 @@
             <url>https://ci.ender.zone/plugin/repository/everything/</url>
         </repository>
         <repository>
-            <id>aikar</id>
+            <id>aikar.co</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
         <repository>
@@ -117,7 +117,7 @@
         </dependency>
         <dependency>
             <groupId>co.aikar</groupId>
-            <artifactId>acf-PAPER</artifactId>
+            <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
